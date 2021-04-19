@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    <hibernate-mapping>
+        <class name="com.ideas2it.employeeManagementSystem.employee.model.Employee" table="employee">
+            <id name = "id" type = "int" column = "employee_id">
+                <generator class="increment"></generator>
+            </id>
+            
+    <property name="name" type="string"  column="name"></property>  
+    <property name="emailId" type="string" column="email_id" ></property>  
+    <property name="dateOfBirth" type="date" column="date_of_birth"></property>  
+    <property name="dateOfJoining" type="date" column="date_of_joining"></property>  
+    <property name="phoneNumber" type="long"  column="phone_number"></property>  
+        <property name="isDelete"  type="boolean"  column="is_delete"></property> 
+    <list name="addressList"  cascade="all" lazy="false">
+      <key>
+        <column name="employee_id"  />
+      </key>
+      <index column = "idx" > </index>
+      <one-to-many class="com.ideas2it.employeeManagementSystem.employee.model.Address" />
+   </list>
+
+   <list name="projectList"  table="employee_project" lazy="false">
+      <key>
+        <column name="employee_id"/>
+      </key>
+      <index column = "idx"> </index>
+      <many-to-many  class="com.ideas2it.employeeManagementSystem.project.model.Project" column="project_id"/>
+   </list>
+
+      </class>
+ </hibernate-mapping>

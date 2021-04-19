@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.sourceforge.net/hibernate-configuration-3.0.dtd"> 
+  
+<hibernate-configuration>    
+  <session-factory>  
+    <!-- Update the database schema on startup -->
+    <property name ="hbm2ddl.auto">update</property> 
+
+    <!-- SQL dialect --> 
+    <property name ="dialect">org.hibernate.dialect.MySQL8Dialect</property> 
+
+    <!-- Database connection settings -->
+    <property name ="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property> 
+    <property name ="hibernate.connection.url">jdbc:mysql://localhost:3306/EmployeeManagementSystem</property>  
+    <property name ="hibernate.connection.username">root</property>  
+    <property name ="hibernate.connection.password">Tamilarasi@123</property>  
+
+    <!-- entity class-->
+    <mapping resource="resources/classes/project.hbm.xml"/> 
+    <mapping resource="resources/classes/employee.hbm.xml"/> 
+    <mapping resource="resources/classes/address.hbm.xml"/> 
+
+  </session-factory>  
+</hibernate-configuration>  
