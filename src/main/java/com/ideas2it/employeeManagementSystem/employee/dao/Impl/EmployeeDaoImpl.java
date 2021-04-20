@@ -76,15 +76,32 @@ public class EmployeeDaoImpl implements EmployeeDao {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Employee> getEmployeeById(int id) throws EmployeeManagementException {
+	public Employee getEmployeeById(int id) throws EmployeeManagementException {
 		Session session = null;
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			Query query = session.createQuery(Constants.EMPLOYEE_EXIST_QUERY);
-			query.setParameter(Constants.ID, id);
-			List<Employee> employeeList = query.list();
-			return employeeList;
+			return (Employee) session.createQuery(Constants.EMPLOYEE_EXIST_QUERY).setParameter(Constants.ID, id).uniqueResult();
+		} catch (HibernateException exception) {
+			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
+			employeeManagementLogger.logError(exception);
+			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		} finally {
+			sessionfactory.closeSession(session);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Employee getDeletedEmployeeById(int id) throws EmployeeManagementException {
+		Session session = null;
+		try {
+			SessionFactory factory = sessionfactory.openSessionFactory();
+			session = factory.openSession();
+			return  (Employee) session.createQuery(Constants.GET_DELETED_EMPLOYEE_BY_ID_QUERY).setParameter(Constants.ID, id).uniqueResult();
+			//return employee;
 		} catch (HibernateException exception) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
@@ -180,27 +197,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Employee getDeletedEmployeeById(int id) throws EmployeeManagementException {
-		Session session = null;
-		try {
-			SessionFactory factory = sessionfactory.openSessionFactory();
-			session = factory.openSession();
-			Query query = session.createQuery(Constants.GET_DELETED_EMPLOYEE_BY_ID_QUERY);
-			query.setParameter(Constants.ID, id);
-			List<Employee> employeeList = query.list();
-			return employeeList.get(0);
-		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
-			employeeManagementLogger.logError(exception);
-			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		} finally {
-			sessionfactory.closeSession(session);
-		}
-	}
 	
 	/**
 	 * {@inheritDoc}

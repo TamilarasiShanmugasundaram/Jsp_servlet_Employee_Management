@@ -7,6 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
+<form>
+	<p>
+		<button formaction="Employee">Employee</button>
+	</p>
+	</form>
 	<form action="retrieveEmployee" method="post">
 		<label>Enter id : </label><input type="number" name="id" required><br> <input
 			type="submit" name="operation" value="retrieve">

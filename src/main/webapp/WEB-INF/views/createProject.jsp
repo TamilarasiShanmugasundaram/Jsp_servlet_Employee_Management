@@ -1,10 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ page import="org.springframework.web.bind.annotation.ModelAttribute"%>
-<%@ page import="org.springframework.web.servlet.tags.form.FormTag"%>
-<%@ page import="org.springframework.web.servlet.tags.form.LabelTag"%>
-<%@ page import="org.springframework.web.servlet.tags.form.InputTag"%>
+<%@ page import=" com.ideas2it.employeeManagementSystem.project.model.Project"%>
 <%@ page import="java.sql.Date"%>
 <!DOCTYPE html>
 <html>
@@ -12,9 +9,16 @@
 <meta charset="ISO-8859-1">
 </head>
 <body>
-	<h1>Create Project</h1>
+		<form> 
+	<p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
+	
+	<%Project project = (Project) request.getAttribute("project"); %>
 	<form:form action="createProject" method="post"
 		modelAttribute="project">
+		<form:input type="hidden" id="id" path="projectId"/>
 		<table>
 			<tr>
 				<td><form:label path="title"> Title </form:label></td>
@@ -43,7 +47,13 @@
 				<td><form:input type="number" path="budget" required="required" /></td>
 			</tr>
 		</table>
-			<input type="submit" value="Create">
+		<%if(project.getProjectId() == 0)  {%>
+			<input type="submit" value="Create"/>
+	<%	}%>	
+	
+				<%if(project.getProjectId() != 0)  {%>
+			<button type="submit" formaction="update"> Update </button>
+	<%	}%>	
 	</form:form>
 </body>
 </html>

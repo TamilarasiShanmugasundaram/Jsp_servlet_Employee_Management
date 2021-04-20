@@ -5,6 +5,11 @@
 <title>Insert title here</title>
 </head>
 <body>
+<form>
+	<p>
+		<button formaction="Project">Project</button>
+	</p>
+	</form>
 <form action="UnassignEmployee" method="post" >
    <label> Enter Project id : </label><input type= "number" name ="projectId" required><br>
    <label> Enter Employee id : </label><input type= "number" name ="employeeId" required><br>

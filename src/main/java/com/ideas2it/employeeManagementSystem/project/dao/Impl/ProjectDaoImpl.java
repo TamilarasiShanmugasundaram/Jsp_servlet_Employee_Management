@@ -82,15 +82,18 @@ public class ProjectDaoImpl implements ProjectDao {
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			Query query = session.createQuery(Constants.PROJECT_EXIST_QUERY);
-			query.setParameter(Constants.ID, id);
-			List<Project> projectList = query.list();
-			return projectList.get(0);
+			//Project project = (Project) session.createQuery(Constants.PROJECT_EXIST_QUERY);
+			Project project = (Project) session.createQuery(Constants.PROJECT_EXIST_QUERY)
+					    .setParameter(Constants.ID, id)
+					    .uniqueResult();
+			//query.setParameter(Constants.ID, id);
+			//List<Project> project =  query.getResultList();
+			return project;
 		} catch (HibernateException exception) {
 			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		} finally {
+		} finally { 	 	
 			sessionfactory.closeSession(session);
 		}
 	}
@@ -170,6 +173,23 @@ public class ProjectDaoImpl implements ProjectDao {
 			session = factory.openSession();
 			Query query = session.createQuery(Constants.GET_DELETED_PROJECT_BY_ID_QUERY);
 			query.setParameter(Constants.ID, id);
+			List<Project> list = query.list();
+			return list;
+		} catch (HibernateException exception) {
+			employeeManagementLogger.logClassname("ProjectDaoImpl");
+			employeeManagementLogger.logError(exception);
+			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		} finally {
+			sessionfactory.closeSession(session);
+		}
+	}
+	
+	public List<Project> getProjects() throws EmployeeManagementException {
+		Session session = null;
+		try {
+			SessionFactory factory = sessionfactory.openSessionFactory();
+			session = factory.openSession();
+			Query query = session.createQuery("from Project");
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {

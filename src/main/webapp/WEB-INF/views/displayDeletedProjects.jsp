@@ -11,9 +11,16 @@
 </head>
 <body>
 <h1>Display deleted projects</h1>
+	<form> 
+	<p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
+<form>
 <p>
-	<a href="retrieveProject.jsp">Retrieve Project</a>
+	<button formaction="retrieveProject">Retrieve Project</button>
 </p>
+</form>
 	<%
 		@SuppressWarnings("unchecked")
 	List<Project> list = (List<Project>) request.getAttribute("deletedProjects");

@@ -4,7 +4,11 @@
 <meta charset="ISO-8859-1">
 </head>
 <body>
-	<h1>Delete project</h1>
+			<form> 
+	<p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
 	<form action="DeleteProject" method="post">
 		<label> Enter id : </label> <input type="number" name="id" required><br>
 		<input type="submit" name="operation" value="delete">

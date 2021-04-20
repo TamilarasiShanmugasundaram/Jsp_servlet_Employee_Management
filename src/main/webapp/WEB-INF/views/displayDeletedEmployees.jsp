@@ -10,9 +10,16 @@
 </head>
 <body>
 	<h1>Deleted employees</h1>
+			<form>
 	<p>
-		<a href="retrieveEmployee.jsp">Retrieve Employee</a>
+		<button formaction="Employee">Employee</button>
 	</p>
+	</form>
+	<form>
+	<p>
+		<button formaction="retrieveEmployee">Retrieve Employee</button>
+	</p>
+	</form>
 	<%
 		@SuppressWarnings("unchecked")
 	List<Employee> list = (List<Employee>) request.getAttribute("deletedEmployees");

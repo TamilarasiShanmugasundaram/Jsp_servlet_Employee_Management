@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import com.ideas2it.employeeManagementSystem.customException.EmployeeManagementE
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
 import com.ideas2it.employeeManagementSystem.employee.service.EmployeeService;
 import com.ideas2it.employeeManagementSystem.employee.service.Impl.EmployeeServiceImpl;
+import com.ideas2it.employeeManagementSystem.project.model.Project;
 import com.ideas2it.employeeManagementSystem.project.service.ProjectService;
 import com.ideas2it.employeeManagementSystem.project.service.Impl.ProjectServiceImpl;
 
@@ -38,15 +41,64 @@ public class EmployeeController {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	@RequestMapping(value = "/CreateEmployee", method = RequestMethod.POST)
-	public ModelAndView getEmployeeFromClient(@RequestParam(Constants.NAME) String name,
-			@RequestParam(Constants.PHONENUMBER) String phoneNumber, @RequestParam(Constants.EMAIL_ID) String emailId,
-			@RequestParam(Constants.DOB) String dateOfBirth, @RequestParam(Constants.DOJ) String dateOfJoining,
-			HttpServletRequest request) {
+
+	@GetMapping(value = "/Employee")
+	public ModelAndView requestProject() {
+		modelAndview.setViewName("employee");
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/deleteEmployee")
+	public ModelAndView deleteEmployee() {
+		modelAndview.setViewName("deleteEmployee");
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/getIdForEmployeeUpdate")
+	public ModelAndView getIdForEmployeeUpdate() {
+		modelAndview.setViewName("getIdForEmployeeUpdate");
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/assignProject")
+	public ModelAndView assignProject() {
 		try {
-			Map<String, String> isValid = employeeServiceImpl.validate(phoneNumber, emailId);
+			ProjectService projectServiceImpl = new ProjectServiceImpl();
+			modelAndview.setViewName("assignProject");
+			modelAndview.addObject("Projects",projectServiceImpl.getProjects());			
+		} catch(EmployeeManagementException exception) {
+			modelAndview.setViewName("displayMessages");
+			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		}
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/unassignProject")
+	public ModelAndView unassignProject() {
+		modelAndview.setViewName("unassignProject");
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/retrieveEmployee")
+	public ModelAndView retrieveEmployee() {
+		modelAndview.setViewName("retrieveEmployee");
+		return modelAndview;
+	}
+
+	@GetMapping(value = "/getEmployeeId")
+	public ModelAndView getEmployeeId() {
+		modelAndview.setViewName("getEmployeeId");
+		return modelAndview;
+	}
+
+	@RequestMapping(value = "/CreateEmployee", method = RequestMethod.POST)
+	public ModelAndView createEmployee(@ModelAttribute("employee") Employee employee) {
+		try {
+			Map<String, String> isValid = employeeServiceImpl.validate(String.valueOf(employee.getPhoneNumber()), employee.getEmailId());
 			if ("true" == isValid.get("Boolean")) {
-				createEmployee(name, phoneNumber, emailId, dateOfBirth, dateOfJoining, request);
+				employeeServiceImpl.createEmployee(employee, employee.getAddressList());
+				modelAndview.setViewName("displayMessages");
+				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_SUCCESS);
 			} else {
 				modelAndview.setViewName("displayMessages");
 				modelAndview.addObject(Constants.MESSAGE, isValid.get(Constants.MESSAGE));
@@ -56,68 +108,6 @@ public class EmployeeController {
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
-	}
-
-	/**
-	 * To create the employee
-	 * 
-	 * @param name          provides the employee name
-	 * @param phoneNumber   provides the employee phoneNumber
-	 * @param emailId       provides the employee emailId
-	 * @param dateOfBirth   provides the employee dob
-	 * @param dateOfJoining provides the employee doj
-	 * @param request       provides the http servlet request
-	 * @param response      provides the http servlet response
-	 */
-	public ModelAndView createEmployee(String name, String phoneNumber, String emailId, String dateOfBirth,
-			String dateOfJoining, HttpServletRequest request) {
-		try {
-			List<Map<String, String>> addressList = new ArrayList<Map<String, String>>();
-			addressList = getAddressDetails(addressList, Constants.PERMANENT, request);
-			addressList = getAddressDetails(addressList, Constants.TEMPORARY, request);
-			boolean statusOfCreateEmployee = employeeServiceImpl.createEmployee(name, emailId, dateOfBirth,
-					dateOfJoining, Long.parseLong(phoneNumber), addressList);
-			if (statusOfCreateEmployee) {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_SUCCESS);
-			} else {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_FAILURE);
-			}
-		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		}
-		return modelAndview;
-	}
-
-	/**
-	 * To get the address of the employee
-	 * 
-	 * @param addressList provides the list of address
-	 * @param request     provides the http servlet request
-	 * @param request     provides the http servlet response
-	 * @param addressType provides the type of the address
-	 */
-	public List<Map<String, String>> getAddressDetails(List<Map<String, String>> addressList, String addressType,
-			HttpServletRequest request) {
-		Map<String, String> addressMap = new HashMap<String, String>();
-		String doorNumber = request.getParameter(addressType + Constants.DOORNUMBER);
-		String streetNumber = request.getParameter(addressType + Constants.STREETNUMBER);
-		String city = request.getParameter(addressType + Constants.CITY);
-		String district = request.getParameter(addressType + Constants.DISTRICT);
-		String state = request.getParameter(addressType + Constants.STATE);
-		String country = request.getParameter(addressType + Constants.COUNTRY);
-		String pincode = request.getParameter(addressType + Constants.PINCODE);
-		addressMap.put(Constants.DOORNUMBER, doorNumber);
-		addressMap.put(Constants.STREETNUMBER, streetNumber);
-		addressMap.put(Constants.CITY, city);
-		addressMap.put(Constants.DISTRICT, district);
-		addressMap.put(Constants.STATE, state);
-		addressMap.put(Constants.COUNTRY, country);
-		addressMap.put(Constants.PINCODE, pincode);
-		addressList.add(addressMap);
-		return addressList;
 	}
 
 	/**
@@ -159,10 +149,8 @@ public class EmployeeController {
 	public ModelAndView update(@RequestParam(Constants.ID) int id) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(id)) {
-				List<Employee> employeeList = employeeServiceImpl.getEmployeeById(id);
-				Employee employee = employeeList.get(0);
-				modelAndview.setViewName("updateEmployee");
-				modelAndview.addObject(Constants.EMPLOYEE, employee);
+				modelAndview.setViewName("createEmployee");
+				modelAndview.addObject(Constants.EMPLOYEE, employeeServiceImpl.getEmployeeById(id));
 			} else {
 				modelAndview.setViewName("displayMessages");
 				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
@@ -182,17 +170,13 @@ public class EmployeeController {
 	 * @throws EmployeeManagementException
 	 */
 	@RequestMapping(value = "/UpdateEmployee", method = RequestMethod.POST)
-	public ModelAndView updateAll(@RequestParam(Constants.ID) int id, @RequestParam(Constants.NAME) String name,
-			@RequestParam(Constants.PHONENUMBER) long phoneNumber, @RequestParam(Constants.EMAIL_ID) String emailId,
-			@RequestParam(Constants.DOB) String dateOfBirth, @RequestParam(Constants.DOJ) String dateOfJoining,
-			HttpServletRequest request) {
+	public ModelAndView updateAll(@ModelAttribute("employee") Employee employee) {
 		try {
-			List<Map<String, String>> addressList = new ArrayList<Map<String, String>>();
-			addressList = getAddressDetails(addressList, Constants.PERMANENT, request);
-			addressList = getAddressDetails(addressList, Constants.TEMPORARY, request);
-			if (employeeServiceImpl.isEmployeeExist(id)) {
-				boolean statusOfUpdateEmployee = employeeServiceImpl.updateAll(id, emailId, phoneNumber, name,
-						dateOfBirth, dateOfJoining, addressList);
+			//List<Map<String, String>> addressList = new ArrayList<Map<String, String>>();
+			//addressList = getAddressDetails(addressList, Constants.PERMANENT, request);
+			//addressList = getAddressDetails(addressList, Constants.TEMPORARY, request);
+			if (employeeServiceImpl.isEmployeeExist(employee.getId())) {
+				boolean statusOfUpdateEmployee = employeeServiceImpl.updateAll(employee);
 				if (statusOfUpdateEmployee) {
 					modelAndview.setViewName("displayMessages");
 					modelAndview.addObject(Constants.MESSAGE, Constants.UPDATE_SUCCESS);
@@ -219,32 +203,35 @@ public class EmployeeController {
 	 */
 	@RequestMapping(value = "/AssignProject", method = RequestMethod.POST)
 	public ModelAndView assignProject(@RequestParam(Constants.EMPLOYEE_ID) int employeeId,
-			@RequestParam(Constants.PROJECT_ID) int projectId) {
+			@RequestParam("projectIds") List<Integer> projectIdList) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(employeeId)) {
 				ProjectService projectServiceImpl = new ProjectServiceImpl();
-				if (projectServiceImpl.isProjectExist(projectId)) {
-					if (employeeServiceImpl.isAssignExist(employeeId, projectId)) {
-						modelAndview.setViewName("displayMessages");
-						modelAndview.addObject(Constants.MESSAGE, Constants.ALREADY_ASSIGN);
-					} else {
-						boolean statusOfAssignProject = employeeServiceImpl.assignProject(projectId, employeeId);
-						if (statusOfAssignProject) {
-							modelAndview.setViewName("displayMessages");
-							modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_SUCCESS);
-						} else {
-							modelAndview.setViewName("displayMessages");
-							modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_ASSIGN);
-						}
-					}
-				} else {
-					modelAndview.setViewName("displayMessages");
-					modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
-				}
-			} else {
+				
 				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
-			}
+				modelAndview.addObject(Constants.MESSAGE, projectIdList.size());
+			//	if (projectServiceImpl.isProjectExist(projectId)) {
+					//if (employeeServiceImpl.isAssignExist(employeeId, projectIdList)) {
+//						modelAndview.setViewName("displayMessages");
+//						modelAndview.addObject(Constants.MESSAGE, Constants.ALREADY_ASSIGN);
+//					} else {
+						//boolean statusOfAssignProject = employeeServiceImpl.assignProject(projectId, employeeId);
+//						if (statusOfAssignProject) {
+//							modelAndview.setViewName("displayMessages");
+//							modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_SUCCESS);
+//						} else {
+//							modelAndview.setViewName("displayMessages");
+//							modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_ASSIGN);
+//						}
+					}
+//				} else {
+//					modelAndview.setViewName("displayMessages");
+//					modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
+//				}
+//			} else {
+//				modelAndview.setViewName("displayMessages");
+//				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
+//			}
 		} catch (EmployeeManagementException exception) {
 			modelAndview.setViewName("displayMessages");
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
@@ -292,9 +279,9 @@ public class EmployeeController {
 	public ModelAndView getEmployeeById(@RequestParam(Constants.ID) int id) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(id)) {
-				List<Employee> employeeList = employeeServiceImpl.getEmployeeById(id);
+				Employee employee = employeeServiceImpl.getEmployeeById(id);
 				modelAndview.setViewName("displaySingleEmployee");
-				modelAndview.addObject(Constants.EMPLOYEE, employeeList);
+				modelAndview.addObject(Constants.EMPLOYEE, employee);
 			} else {
 				modelAndview.setViewName("displayMessages");
 				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
@@ -332,14 +319,19 @@ public class EmployeeController {
 	 * @param request provides the http servlet response
 	 */
 	@RequestMapping(value = "/retrieveEmployee", method = RequestMethod.POST)
-	public ModelAndView retrieveEmployee(@RequestParam(Constants.ID) int projectId) {
+	public ModelAndView retrieveEmployee(@RequestParam(Constants.ID) int id) {
 		try {
-			if (employeeServiceImpl.retrieveEmployee(projectId)) {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_SUCCESS);
+			if (false == employeeServiceImpl.isEmployeeExist(id)) {
+				if (employeeServiceImpl.retrieveEmployee(id)) {
+					modelAndview.setViewName("displayMessages");
+					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_SUCCESS);
+				} else {
+					modelAndview.setViewName("displayMessages");
+					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_FAILURE);
+				}
 			} else {
 				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_FAILURE);
+				modelAndview.addObject(Constants.MESSAGE, "This employee is not deleted!!");
 			}
 		} catch (EmployeeManagementException exception) {
 			modelAndview.setViewName("displayMessages");
@@ -365,5 +357,12 @@ public class EmployeeController {
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
+	}
+
+	@RequestMapping(value = "/getEmployee")
+	public ModelAndView getEmployee() {
+		ModelAndView model = new ModelAndView("createEmployee");
+		model.addObject("employee", new Employee());
+		return model;
 	}
 }

@@ -25,7 +25,7 @@ public interface ProjectService {
      * return boolean
      *        return true if successfully created otherwise return false
      */
-    public boolean createProject(String title, Date startDate, Date estimateEndDate, String status, String client, long budget) throws EmployeeManagementException;
+    public boolean createProject(Project project) throws EmployeeManagementException;
 
     /**
      * To delete the employee
@@ -53,7 +53,7 @@ public interface ProjectService {
      * return boolean 
      *        return true if employee assigned successfully otherwise return false
      */
-    public boolean updateAll(int id, String title, String status, String client, String estimatedEndDate, String startDate, long budget) throws EmployeeManagementException;
+    public boolean updateAll(Project project) throws EmployeeManagementException;
     
     /**
      * To assign employee for project
@@ -149,6 +149,8 @@ public interface ProjectService {
      *        return String 
      */
     public String validateTimePeriodForProject(String startDate, String estimateEndDate);
+    
+    public List<Project> getProjects() throws EmployeeManagementException;
 
    /**
     * To close the session factory

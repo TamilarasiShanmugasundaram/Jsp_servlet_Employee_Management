@@ -27,11 +27,10 @@ public class ProjectServiceImpl implements ProjectService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean createProject(String title, Date startDateString, Date estimateEndDateString, String status,
-			String client, long budget) throws EmployeeManagementException {
+	public boolean createProject(Project project) throws EmployeeManagementException {
 	//	Date startDate = Date.valueOf(startDateString);
 		//Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		Project project = new Project(title, startDateString, estimateEndDateString, status, client, budget);
+		//Project project = new Project(project.getTitle(), project, estimateEndDateString, status, client, budget);
 		project.getIsDelete();
 		boolean resultOfCreateProject = projectDaoImpl.createProject(project);
 		if (resultOfCreateProject) {
@@ -71,18 +70,17 @@ public class ProjectServiceImpl implements ProjectService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean updateAll(int id, String title, String status, String client, String estimateEndDateString, String startDateString,
-			long budget) throws EmployeeManagementException {
-		Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		Date startDate = Date.valueOf(startDateString);
-		Project project = projectDaoImpl.getProjectByProjectId(id);
-		project.setEstimatedEndDate(estimateEndDate);
-		project.setClient(client);
-		project.setStartDate(startDate);
-		project.setBudget(budget);
-		project.setTitle(title);
-		project.setStatus(status);
-		project.setProjectId(id);
+	public boolean updateAll(Project project) throws EmployeeManagementException {
+		//Date estimateEndDate = Date.valueOf(estimateEndDateString);
+		//Date startDate = Date.valueOf(startDateString);
+		//Project project = projectDaoImpl.getProjectByProjectId(id);
+//		project.setEstimatedEndDate(estimateEndDate);
+//		project.setClient(client);
+//		project.setStartDate(startDate);
+//		project.setBudget(budget);
+//		project.setTitle(title);
+//		project.setStatus(status);
+//		project.setProjectId(id);
 		boolean resultOfUpdateProject = projectDaoImpl.updateProject(project);
 		if (resultOfUpdateProject) {
 			employeeManagementLogger.logClassname("projectServiceImpl");
@@ -117,8 +115,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public boolean assignEmployee(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
-		List<Employee> singleEmployee = employeeServiceImpl.getEmployeeById(employeeId);
-		Employee employee = singleEmployee.get(0);
+		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
+		//Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
 		List<Employee> employeeList = project.getEmployeeList();
 		employeeList.add(employee);
@@ -137,8 +135,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public boolean unassignEmployee(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
-		List<Employee> singleEmployee = employeeServiceImpl.getEmployeeById(employeeId);
-		Employee employee = singleEmployee.get(0);
+		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
+		//Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
 		List<Employee> employeeList = project.getEmployeeList();
 		boolean flag = false;
@@ -161,8 +159,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	public boolean isAssignExist(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
-		List<Employee> singleEmployee = employeeServiceImpl.getEmployeeById(employeeId);
-		Employee employee = singleEmployee.get(0);
+		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
+		//Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
 		List<Employee> employeeList = project.getEmployeeList();
 		boolean flag = false;
@@ -249,7 +247,9 @@ public class ProjectServiceImpl implements ProjectService {
 			return exception.getMessage();
 		}
 	}
-
+	public List<Project> getProjects() throws EmployeeManagementException {
+		return projectDaoImpl.getProjects();
+	}
 	/**
 	 * {@inheritDoc}
 	 */

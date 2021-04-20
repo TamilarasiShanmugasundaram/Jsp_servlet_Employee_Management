@@ -12,6 +12,17 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+	<form> 
+	<p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
+	<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
+	</p>
+	</form>
 	<%
 		Project project = (Project) request.getAttribute("project");
 	    List<Employee> employeeList = project.getEmployeeList();
@@ -113,10 +124,5 @@
 		<%
 		}}%>
 	</table>
-	
-
-	<p>
-		<a href="index.jsp">Go to main menu</a>
-	</p>
 </body>
 </html>

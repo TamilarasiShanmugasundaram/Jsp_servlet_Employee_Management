@@ -12,9 +12,16 @@
 </head>
 <body>
 	<h1>Display Employees</h1>
+	<form>
 	<p>
-		<a href="index.jsp">Go to main menu</a>
+		<button formaction="index">Go to main menu</button>
 	</p>
+	</form>
+			<form>
+	<p>
+		<button formaction="Employee">Employee</button>
+	</p>
+	</form>
 	<%
 		@SuppressWarnings("unchecked")
 	List<Employee> list = (List<Employee>) request.getAttribute("Employees");

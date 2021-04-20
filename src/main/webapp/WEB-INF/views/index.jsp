@@ -7,12 +7,15 @@
 </head>
 <body>
 	<h1>Employee Management System</h1>
+		<form> 
+		<p>
+		<button formaction= "Employee">Employee</button>
+		</p>
+	</form>
+	<form> 
 	<p>
-	<p>
-		<button onclick="document.location='employee.jsp'">Employee</button>
-	</p>
-	<p>
-		<button onclick="document.location='project.jsp'">Project</button>
-	</p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
 </body>
 </html>

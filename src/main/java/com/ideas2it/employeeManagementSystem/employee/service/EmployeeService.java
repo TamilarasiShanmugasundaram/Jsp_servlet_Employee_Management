@@ -63,7 +63,7 @@ public interface EmployeeService {
      * return boolean
      *        return true if employee created succcessfully otherwise return false
      */
-    public boolean createEmployee(String name, String emailId, String dateOfBirth, String dateOfJoining, long phoneNumber, List<Map<String, String>> addresses) throws EmployeeManagementException;
+    public boolean createEmployee(Employee employee, List<Address> addresses) throws EmployeeManagementException;
 
     /**
      * To delete the employee
@@ -108,7 +108,7 @@ public interface EmployeeService {
      * return boolean 
      *       return true if project is assiged to employee otherwise return false
      */
-    public boolean isAssignExist(int employeeId, int projectId) throws EmployeeManagementException;
+    public boolean isAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException;
     
     /**
      * To assign employee for project
@@ -145,7 +145,7 @@ public interface EmployeeService {
      * return boolean
      *       return true if all details are updated otherwise return false
      */
-	public boolean updateAll(int id, String emailId, long phoneNumber, String name, String dateOfBirthString, String dateOfJoiningString, List<Map<String, String>> addressList) throws EmployeeManagementException;
+	public boolean updateAll( Employee employee) throws EmployeeManagementException;
 	
     /**
      * To get employee by employeeId
@@ -154,8 +154,17 @@ public interface EmployeeService {
      * return Employee
      *       provides the employee object
      */
-    public List<Employee> getEmployeeById(int id) throws EmployeeManagementException;
+    public Employee getEmployeeById(int id) throws EmployeeManagementException;
 
+    /**
+     * To get employee by employeeId
+     * @param id
+     *        Provides the id of the employee
+     * return Employee
+     *       provides the employee object
+     */
+    public Employee getDeletedEmployeeById(int id) throws EmployeeManagementException;
+    
     /**
      * To get employee details
      * return List<Employee>

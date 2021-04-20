@@ -63,32 +63,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean createEmployee(String name, String emailId, String dateOfBirth, String dateOfJoining,
-			long phoneNumber, List<Map<String, String>> addresses) throws EmployeeManagementException {
-		java.sql.Date dobDate = Date.valueOf(dateOfBirth);
-		java.sql.Date dojDate = Date.valueOf(dateOfJoining);
-		boolean isPermanent = true;
-		Employee employee = new Employee(name, emailId, dobDate, dojDate, phoneNumber);
-		List<Address> addressList = new ArrayList<Address>();
-		for (int index = 0; index < addresses.size(); index++) {
-			Map<String, String> addressMap = addresses.get(index);
-			String doorNumber = addressMap.get(Constants.DOORNUMBER);
-			String streetNumber = addressMap.get(Constants.STREETNUMBER);
-			String city = addressMap.get(Constants.CITY);
-			String district = addressMap.get(Constants.DISTRICT);
-			String state = addressMap.get(Constants.STATE);
-			String country = addressMap.get(Constants.COUNTRY);
-			long pincode = Long.parseLong(addressMap.get(Constants.PINCODE));
-			if (Constants.ZERO == index) {
-				isPermanent = true;
+	public boolean createEmployee(Employee employee, List<Address> addresses) throws EmployeeManagementException {
+		for (int i = 0; i < addresses.size(); i++) {
+			if (Constants.ZERO == i) {
+				addresses.get(i).setIsPermanent(true);
 			} else {
-				isPermanent = false;
+				addresses.get(i).setIsPermanent(false);
 			}
-			Address address = new Address(doorNumber, streetNumber, city, district, state, country, pincode,
-					isPermanent);
-			addressList.add(address);
 		}
-		employee.setAddressList(addressList);
+		employee.setAddressList(addresses);
 		boolean resultOfCreateEmployee = employeeDaoImpl.createEmployee(employee);
 		if (resultOfCreateEmployee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
@@ -102,8 +85,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 */
 	@Override
 	public boolean deleteEmployee(int id) throws EmployeeManagementException {
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(id);
-		Employee employee = employeeList.get(0);
+		Employee employee = employeeDaoImpl.getEmployeeById(id);
+		// Employee employee = employeeList.get(0);
 		List<Address> addressList = employee.getAddressList();
 		for (Address list : addressList) {
 			list.setIsDelete(true);
@@ -112,15 +95,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		boolean resultOfDeleteEmployee = employeeDaoImpl.updateEmployee(employee);
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		List<Project> projectList = projectServiceImpl.getProjectDetails();
-		for(Project project : projectList) {
+		for (Project project : projectList) {
 			List<Employee> employees = project.getEmployeeList();
-			if(employees.contains(employee)) {
+			if (employees.contains(employee)) {
 				employees.remove(employee);
 				project.setEmployeeList(employees);
 				projectServiceImpl.updateProject(project);
 			}
 		}
-		
+
 		if (resultOfDeleteEmployee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.DELETE_SUCCESS);
@@ -152,31 +135,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean updateAll(int id, String emailId, long phoneNumber, String name, String dateOfBirthString,
-			String dateOfJoiningString, List<Map<String, String>> addressList) throws EmployeeManagementException {
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(id);
-		Employee employee = employeeList.get(0);
-		List<Address> addresses = employee.getAddressList();
-		java.sql.Date dob = Date.valueOf(dateOfBirthString);
-		java.sql.Date doj = Date.valueOf(dateOfJoiningString);
-		employee.setId(id);
-		employee.setName(name);
-		employee.setEmailId(emailId);
-		employee.setPhoneNumber(phoneNumber);
-		employee.setDateOfBirth(dob);
-		employee.setDateOfJoining(doj);
-		int index = 0, count = 0;
-		for(Address address : addresses) {
-			Map<String, String> permanentAddressMap = addressList.get(index++);
-			address.setStreetNumber(permanentAddressMap.get(Constants.STREETNUMBER));
-			address.setCity(permanentAddressMap.get(Constants.CITY));
-			address.setDistrict(permanentAddressMap.get(Constants.DISTRICT));
-			address.setState(permanentAddressMap.get(Constants.STATE));
-			address.setCountry(permanentAddressMap.get(Constants.COUNTRY));
-			address.setPincode(Long.parseLong(permanentAddressMap.get(Constants.PINCODE)));
-			addresses.set(count++,address);
-		}
-		employee.setAddressList(addresses);
+	public boolean updateAll(Employee employee) throws EmployeeManagementException {
+//		Employee employee = employeeDaoImpl.getEmployeeById(id);
+//		//Employee employee = employeeList.get(0);
+//		List<Address> addresses = employee.getAddressList();
+//		java.sql.Date dob = Date.valueOf(dateOfBirthString);
+//		java.sql.Date doj = Date.valueOf(dateOfJoiningString);
+//		employee.setId(id);
+//		employee.setName(name);
+//		employee.setEmailId(emailId);
+//		employee.setPhoneNumber(phoneNumber);
+//		employee.setDateOfBirth(dob);
+//		employee.setDateOfJoining(doj);
+//		int index = 0, count = 0;
+//		for(Address address : addresses) {
+//			Map<String, String> permanentAddressMap = addressList.get(index++);
+//			address.setStreetNumber(permanentAddressMap.get(Constants.STREETNUMBER));
+//			address.setCity(permanentAddressMap.get(Constants.CITY));
+//			address.setDistrict(permanentAddressMap.get(Constants.DISTRICT));
+//			address.setState(permanentAddressMap.get(Constants.STATE));
+//			address.setCountry(permanentAddressMap.get(Constants.COUNTRY));
+//			address.setPincode(Long.parseLong(permanentAddressMap.get(Constants.PINCODE)));
+//			addresses.set(count++,address);
+//		}
+		// employee.setAddressList(employee.getAddressList());
 		boolean resultOfUpdateEmployee = employeeDaoImpl.updateEmployee(employee);
 		if (resultOfUpdateEmployee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
@@ -202,9 +184,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean updateEmployee(Employee employee)throws EmployeeManagementException {
+	public boolean updateEmployee(Employee employee) throws EmployeeManagementException {
 		return employeeDaoImpl.updateEmployee(employee);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -212,8 +195,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public boolean unassignProject(int employeeId, int projectId) throws EmployeeManagementException {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		Project project = projectServiceImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(employeeId);
-		Employee employee = employeeList.get(0);
+		Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
+		// Employee employee = employeeList.get(0);
 		List<Project> projectList = employee.getProjectList();
 		boolean flag = false;
 		if (projectList.contains(project)) {
@@ -240,8 +223,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public boolean assignProject(int projectId, int employeeId) throws EmployeeManagementException {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		Project project = projectServiceImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(employeeId);
-		Employee employee = employeeList.get(0);
+		Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
+		// Employee employee = employeeList.get(0);
 		List<Project> projectList = employee.getProjectList();
 		projectList.add(project);
 		employee.setProjectList(projectList);
@@ -257,13 +240,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Employee> getEmployeeById(int id) throws EmployeeManagementException {
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(id);
-		if (null != employeeList) {
+	public Employee getEmployeeById(int id) throws EmployeeManagementException {
+		Employee employee = employeeDaoImpl.getEmployeeById(id);
+		if (null != employee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.GET_EMPLOYEE_BY_ID_SUCCESS);
 		}
-		return employeeList;
+		return employee;
+	}
+
+	public Employee getDeletedEmployeeById(int id) throws EmployeeManagementException {
+		return employeeDaoImpl.getDeletedEmployeeById(id);
 	}
 
 	/**
@@ -296,15 +283,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isAssignExist(int employeeId, int projectId) throws EmployeeManagementException {
+	public boolean isAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
-		Project project = projectServiceImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = employeeDaoImpl.getEmployeeById(employeeId);
-		Employee employee = employeeList.get(0);
-		List<Project> projectList = employee.getProjectList();
 		boolean flag = false;
-		if (projectList.contains(project)) {
-			flag = true;
+		for (int id:projectIdList) {
+			Project project = projectServiceImpl.getProjectByProjectId(id);
+			Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
+			// Employee employee = employeeList.get(0);
+			List<Project> projectList = employee.getProjectList();
+			if (projectList.contains(project)) {
+				flag = true;
+			} else {
+				assignProject(id, employeeId);
+			}
 		}
 		return flag;
 	}

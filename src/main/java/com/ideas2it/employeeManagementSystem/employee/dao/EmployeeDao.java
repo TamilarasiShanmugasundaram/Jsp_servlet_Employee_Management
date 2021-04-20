@@ -59,7 +59,7 @@ public interface EmployeeDao {
      * return Employee 
      *       provides the employee object
      */
-    public List<Employee> getEmployeeById(int id) throws EmployeeManagementException;
+    public Employee getEmployeeById(int id) throws EmployeeManagementException;
     
     /**
      * To get deleted employee by employeeId

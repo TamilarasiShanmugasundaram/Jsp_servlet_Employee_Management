@@ -5,20 +5,29 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-
-<p> <button onclick="document.location='createEmployee.jsp'">Create</button></p>
-<p> <button onclick="document.location='deleteEmployee.jsp'">Delete</button></p>
-<p><form action="displayAllEmployee">
+	<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
+	</p>
+	</form>
+<form>
+<p> <button formaction="getEmployee">Create</button></p>
+</form>
+<form>
+<p> <button formaction="deleteEmployee">Delete</button></p>
+</form>
+<form action="displayAllEmployee">
+<p>
 <input type="submit" name="operation" value="displayAllEmployee">
-</form></p>
-<p><button onclick="document.location='getEmployeeId.jsp'">Display single Employee</button></p>
-<p> <button onclick="document.location='getIdForEmployeeUpdate.jsp'">Update</button></p>
-<p> <button onclick="document.location='assignProject.jsp'">Assign</button></p>
-<p> <button onclick="document.location='unassignProject.jsp'">Unassign</button></p>
+</p>
+</form>
+<form>
+<p><button formaction="getEmployeeId">Display single Employee</button></p></form>
+<form><p> <button formaction="getIdForEmployeeUpdate">Update</button></p></form>
+<form><p> <button formaction="assignProject">Assign</button></p></form>
+<form><p> <button formaction="unassignProject">Unassign</button></p></form>
 <p><form action="RetrieveEmployees" >
-<input type="submit" name="operation" value="Retrieve">
-</form></p>
-
+<input type="submit" name="operation" value="Retrieve"></form>
+</p>
 </body>
 </html>

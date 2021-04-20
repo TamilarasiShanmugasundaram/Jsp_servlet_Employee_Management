@@ -67,6 +67,8 @@ public interface ProjectDao {
      *        return true if project exist otherwise false
      */ 
     public boolean isProjectExist(int id) throws EmployeeManagementException;
+    
+    public List<Project> getProjects() throws EmployeeManagementException;
 
    /**
     * To close the session factory

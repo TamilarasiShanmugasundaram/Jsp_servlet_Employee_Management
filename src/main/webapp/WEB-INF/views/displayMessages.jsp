@@ -10,7 +10,21 @@
 <meta charset="ISO-8859-1">
 </head>
 <body>
-<h3><%out.println(request.getAttribute("Message"));%></h3>
-<p> <a href="index.jsp">Go to main menu</a> </p>
+	<form> 
+	<p>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
+		<form>
+	<p>
+		<button formaction="Employee">Employee</button>
+	</p>
+	</form>
+<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
+	</p>
+	</form>
+	<h3><%out.println(request.getAttribute("Message"));%></h3>
 </body>
 </html>

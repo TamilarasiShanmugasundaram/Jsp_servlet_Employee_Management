@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-
-<%@ page import = "java.time.LocalDate"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ page
+	import=" com.ideas2it.employeeManagementSystem.employee.model.Address"
+	import=" com.ideas2it.employeeManagementSystem.employee.model.Employee"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.time.LocalDate"%>
 
 <!DOCTYPE html>
 <html>
@@ -9,33 +13,127 @@
 <meta charset="ISO-8859-1">
 </head>
 <body>
-	<h1>Create Employee</h1>
-	<form action="CreateEmployee" method="post">
-		<label>Name </label><input type="text" name="name" required><br> <label>Enter
-			phone number </label><input type="tel" name="phonenumber" pattern="(0/91)?[7-9][0-9]{9}" required><br>
-		<label>Enter email id : </label> <input type="email" name="emailId" required><br>
-		<label>Enter DOB </label> <input type="date" name="dob"  max="<%=LocalDate.now()%>" required><br>
-		<label>Enter DOJ </label><input type="date" name="doj" required><br>
-		<label>**Enter Permanent Address** </label><br> <label>Door
-			number : </label><input type="text" name="permanentDoorNumber" required><br>
-		<label>Street number/Name </label> <input type="text"
-			name="permanentStreetNumber" required><br> <label>City :
-		</label><input type="text" name="permanentCity" required><br> <label>District
-			:</label> <input type="text" name="permanentDistrict" required><br> <label>State
-			: </label><input type="text" name="permanentState" required><br> <label>Country
-			:</label> <input type="text" name="permanentCountry" required><br> <label>pincode
-			:</label> <input type="number" name="permanentPincode" required><br> <label>**Enter
-			temporary address** </label><br> <label>Door number : </label><input
-			type="text" name="temporaryDoorNumber" required><br>
-		<label> Street number/name :</label> <input type="text"
-			name="temporaryStreetNumber" required><br> <label>City :</label>
-		<input type="text" name="temporaryCity" required><br>
-		<label> District :</label> <input type="text" name="temporaryDistrict" required><br>
-		<label> State :</label> <input type="text" name="temporaryState" required><br>
-		<label>Country :</label> <input type="text" name="temporaryCountry" required><br>
-		<label>pincode :</label> <input type="number" name="temporaryPincode" required><br>
-		<input type="submit" name="operation" value="create">
-
+		<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
+	</p>
 	</form>
+		<form>
+	<p>
+		<button formaction="Employee">Employee</button>
+	</p>
+	</form>
+	<%Employee employee = (Employee) request.getAttribute("employee"); %>
+	<form:form action="CreateEmployee" method="post"
+		modelAttribute="employee">
+		<form:input type="hidden" id="id" path="id" />
+		<table>
+			<tr>
+				<td><form:label path="name"> Name </form:label></td>
+				<td><form:input path="name" required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="phoneNumber">Phone number</form:label></td>
+				<td><form:input type="tel" path="phoneNumber"
+						pattern="(0/91)?[7-9][0-9]{9}" required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="emailId">Email ID</form:label></td>
+				<td><form:input type="email" path="emailId" required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="dateOfBirth">DOB</form:label></td>
+				<td><form:input type="date" path="dateOfBirth"
+						max="<%=LocalDate.now()%>" required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="dateOfJoining">DOJ</form:label></td>
+				<td><form:input type="date" path="dateOfJoining" required="required" /></td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td><form:label path="addressList[0].doorNumber"> Door number</form:label></td>
+				<td><form:input path="addressList[0].doorNumber"
+						required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="addressList[0].streetNumber"> street number</form:label></td>
+				<td><form:input path="addressList[0].streetNumber"
+						required="required" /></td>
+			</tr>
+						<tr>
+				<td><form:label path="addressList[0].city"> city</form:label></td>
+				<td><form:input path="addressList[0].city"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[0].district"> district</form:label></td>
+				<td><form:input path="addressList[0].district"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[0].state"> state</form:label></td>
+				<td><form:input path="addressList[0].state"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[0].country"> country</form:label></td>
+				<td><form:input path="addressList[0].country"
+						required="required" /></td>
+			</tr>
+											<tr>
+				<td><form:label path="addressList[0].pincode"> pincode</form:label></td>
+				<td><form:input path="addressList[0].pincode"
+						required="required" /></td>
+			</tr>
+		</table>
+
+		<table>
+			<tr>
+				<td><form:label path="addressList[1].doorNumber"> Door number</form:label></td>
+				<td><form:input path="addressList[1].doorNumber"
+						required="required" /></td>
+			</tr>
+			<tr>
+				<td><form:label path="addressList[1].streetNumber"> street number</form:label></td>
+				<td><form:input path="addressList[1].streetNumber"
+						required="required" /></td>
+			</tr>
+						<tr>
+				<td><form:label path="addressList[1].city"> city</form:label></td>
+				<td><form:input path="addressList[1].city"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[1].district"> district</form:label></td>
+				<td><form:input path="addressList[1].district"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[1].state"> state</form:label></td>
+				<td><form:input path="addressList[1].state"
+						required="required" /></td>
+			</tr>
+								<tr>
+				<td><form:label path="addressList[1].country"> country</form:label></td>
+				<td><form:input path="addressList[1].country"
+						required="required" /></td>
+			</tr>
+											<tr>
+				<td><form:label path="addressList[1].pincode"> pincode</form:label></td>
+				<td><form:input path="addressList[1].pincode"
+						required="required" /></td>
+			</tr>
+		</table>
+		
+		<%if(employee.getId() == 0)  {%>
+			<input type="submit" value="Create"/>
+	<%	}%>	
+				<%if(employee.getId() != 0)  {%>
+			<button type="submit" formaction="UpdateEmployee"> Update </button>
+	<%	}%>			
+		
+	</form:form>
 </body>
 </html>

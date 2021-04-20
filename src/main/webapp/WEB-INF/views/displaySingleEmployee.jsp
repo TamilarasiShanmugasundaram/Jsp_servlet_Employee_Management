@@ -13,9 +13,20 @@
 <title>Insert title here</title>
 </head>
 <body>
+<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
+	</p>
+	</form>
+	<body>
+<form>
+	<p>
+		<button formaction="Employee">Employee</button>
+	</p>
+	</form>
 	<%
-		List<Employee> employeeList = (List<Employee>) request.getAttribute("employee");
-	Employee employee = employeeList.get(0);
+		//List<Employee> employeeList = 
+	Employee employee =(Employee) request.getAttribute("employee");
 	List<Project> projectList = employee.getProjectList();
 	%>
 	<table BORDER=1>
@@ -188,11 +199,5 @@
 			}
 		%>
 	</table>
-	
-
-
-	<p>
-		<a href="index.jsp">Go to main menu</a>
-	</p>
 </body>
 </html>

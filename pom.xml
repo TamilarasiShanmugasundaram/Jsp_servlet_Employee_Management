@@ -42,11 +42,7 @@
     <groupId>org.eclipse.jetty</groupId>
     <artifactId>jetty-maven-plugin</artifactId>
     <version>9.4.39.v20210325</version>  
-  <configuration>
-         <webApp>
-      <contextPath>/Employee_Management</contextPath>
-    </webApp>
-    </configuration>
+
   </plugin>
   
     </plugins>

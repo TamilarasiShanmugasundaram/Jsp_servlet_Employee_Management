@@ -12,9 +12,16 @@
 </head>
 <body>
 <h1>Display projects</h1>
+	<form> 
 	<p>
-		<a href="index.jsp">Go to main menu</a>
+		<button formaction= "Project">Project</button>
+		</p>
+	</form>
+<form>
+	<p>
+		<button formaction="index">Go to main menu</button>
 	</p>
+	</form>
 	<%
 		@SuppressWarnings("unchecked")
 	List<Project> list = (List<Project>) request.getAttribute("Projects");
