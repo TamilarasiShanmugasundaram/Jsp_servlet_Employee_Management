@@ -13,6 +13,7 @@ import com.ideas2it.employeeManagementSystem.employee.dao.EmployeeDao;
 import com.ideas2it.employeeManagementSystem.employee.model.Address;
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
 import com.ideas2it.employeeManagementSystem.logger.EmployeeManagementLogger;
+import com.ideas2it.employeeManagementSystem.project.model.Project;
 import com.ideas2it.employeeManagementSystem.sessionFactory.Sessionfactory;
 
 /**
@@ -259,6 +260,23 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			return (0 < list.size());
 		} catch (HibernateException exception) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
+			employeeManagementLogger.logError(exception);
+			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		} finally {
+			sessionfactory.closeSession(session);
+		}
+	}
+	
+	public List<Employee> getEmployees() throws EmployeeManagementException {
+		Session session = null;
+		try {
+			SessionFactory factory = sessionfactory.openSessionFactory();
+			session = factory.openSession();
+			Query query = session.createQuery("from Employee where is_delete = false");
+			List<Employee> list = query.list();
+			return list;
+		} catch (HibernateException exception) {
+			employeeManagementLogger.logClassname("EmployeeDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {

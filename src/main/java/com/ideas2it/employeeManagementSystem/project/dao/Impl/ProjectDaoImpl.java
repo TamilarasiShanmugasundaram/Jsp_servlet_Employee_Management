@@ -32,21 +32,21 @@ public class ProjectDaoImpl implements ProjectDao {
 	public boolean createProject(Project project) throws EmployeeManagementException {
 		Session session = null;
 		Transaction transaction = null;
-		try {
+		//try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
 			transaction = session.beginTransaction();
 			int id = (int) session.save(project);
 			transaction.commit();
 			return true;
-		} catch (HibernateException exception) {
-			sessionfactory.rollbackTransaction(transaction);
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
-			employeeManagementLogger.logError(exception);
-			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		} finally {
-			sessionfactory.closeSession(session);
-		}
+//		} catch (HibernateException exception) {
+//			sessionfactory.rollbackTransaction(transaction);
+//			employeeManagementLogger.logClassname("ProjectDaoImpl");
+//			employeeManagementLogger.logError(exception);
+//			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+//		} finally {
+//			sessionfactory.closeSession(session);
+//		}
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class ProjectDaoImpl implements ProjectDao {
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			Query query = session.createQuery("from Project");
+			Query query = session.createQuery("from Project where is_delete = false");
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {

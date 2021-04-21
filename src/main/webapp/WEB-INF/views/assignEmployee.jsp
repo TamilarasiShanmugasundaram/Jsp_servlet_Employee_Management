@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page
+	import=" com.ideas2it.employeeManagementSystem.employee.model.Employee"%>
+<%@ page import="java.util.List"%>
 	
 <!DOCTYPE html>
 <html>
@@ -9,22 +12,31 @@
 </head>
 <body>
 	<form> 
+			<%
+			@SuppressWarnings("unchecked")
+		List<Employee> employeeList = (List<Employee>) request.getAttribute("Employees");
+		%>
 	<p>
 		<button formaction= "Project">Project</button>
 		</p>
 	</form>
 <form action="AssignEmployee" method="post" >
 <label> Enter Project id : </label>
-   <input type= "text" name ="projectId" required><br>
-   
-  <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-  <label for="vehicle1"> I have a bike</label><br>
-  <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-  <label for="vehicle2"> I have a car</label><br>
-  <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-  <label for="vehicle3"> I have a boat</label><br><br>
-  <input type="submit" value="Submit">
-    <input type= "text" name ="employeeId" required><br>
+   <input type= "number" name ="projectId" required><br>
+ 
+ 		<%
+			for (Employee employee : employeeList) {
+			
+		%>
+		<p>
+			<input type="checkbox"  name="employeeIds"
+				value="<%=employee.getId()%>">
+			<%
+				out.println(employee.getName());
+			}
+		%>
+		</p>
+ 
 <input type="submit" name="operation" value="AssignEmployee">
 </form>
 </body>

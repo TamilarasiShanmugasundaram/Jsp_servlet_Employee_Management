@@ -1,5 +1,6 @@
 package com.ideas2it.employeeManagementSystem.employee.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -201,6 +202,7 @@ public interface EmployeeService {
      *        provides the Exception
      */ 
     public boolean isPhoneNumberExist(long phoneNumber) throws EmployeeManagementException;
+    public List<Employee> getEmployees() throws EmployeeManagementException;
 
     /**
      * To validate the phone number and email id

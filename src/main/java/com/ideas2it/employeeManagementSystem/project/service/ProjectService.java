@@ -125,7 +125,7 @@ public interface ProjectService {
      * return boolean 
      *        return true if already assigned  otherwise return false
      */
-    public boolean isAssignExist(int employeeId, int projectId) throws EmployeeManagementException;
+    public boolean isAssignExist(int projectId, List<Integer>employeeIdList) throws EmployeeManagementException;
     
 	/**
      * To update the projet

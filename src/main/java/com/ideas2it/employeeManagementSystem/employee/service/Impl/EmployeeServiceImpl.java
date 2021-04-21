@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.ideas2it.employeeManagementSystem.constants.Constants;
 import com.ideas2it.employeeManagementSystem.customException.EmployeeManagementException;
@@ -66,9 +68,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public boolean createEmployee(Employee employee, List<Address> addresses) throws EmployeeManagementException {
 		for (int i = 0; i < addresses.size(); i++) {
 			if (Constants.ZERO == i) {
-				addresses.get(i).setIsPermanent(true);
+				((List<Address>) addresses).get(i).setIsPermanent(true);
 			} else {
-				addresses.get(i).setIsPermanent(false);
+				((List<Address>) addresses).get(i).setIsPermanent(false);
 			}
 		}
 		employee.setAddressList(addresses);
@@ -86,7 +88,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public boolean deleteEmployee(int id) throws EmployeeManagementException {
 		Employee employee = employeeDaoImpl.getEmployeeById(id);
-		// Employee employee = employeeList.get(0);
 		List<Address> addressList = employee.getAddressList();
 		for (Address list : addressList) {
 			list.setIsDelete(true);
@@ -96,14 +97,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		List<Project> projectList = projectServiceImpl.getProjectDetails();
 		for (Project project : projectList) {
-			List<Employee> employees = project.getEmployeeList();
+			Set<Employee> employees = project.getEmployeeList();
 			if (employees.contains(employee)) {
 				employees.remove(employee);
 				project.setEmployeeList(employees);
 				projectServiceImpl.updateProject(project);
 			}
 		}
-
 		if (resultOfDeleteEmployee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.DELETE_SUCCESS);
@@ -136,29 +136,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 */
 	@Override
 	public boolean updateAll(Employee employee) throws EmployeeManagementException {
-//		Employee employee = employeeDaoImpl.getEmployeeById(id);
-//		//Employee employee = employeeList.get(0);
-//		List<Address> addresses = employee.getAddressList();
-//		java.sql.Date dob = Date.valueOf(dateOfBirthString);
-//		java.sql.Date doj = Date.valueOf(dateOfJoiningString);
-//		employee.setId(id);
-//		employee.setName(name);
-//		employee.setEmailId(emailId);
-//		employee.setPhoneNumber(phoneNumber);
-//		employee.setDateOfBirth(dob);
-//		employee.setDateOfJoining(doj);
-//		int index = 0, count = 0;
-//		for(Address address : addresses) {
-//			Map<String, String> permanentAddressMap = addressList.get(index++);
-//			address.setStreetNumber(permanentAddressMap.get(Constants.STREETNUMBER));
-//			address.setCity(permanentAddressMap.get(Constants.CITY));
-//			address.setDistrict(permanentAddressMap.get(Constants.DISTRICT));
-//			address.setState(permanentAddressMap.get(Constants.STATE));
-//			address.setCountry(permanentAddressMap.get(Constants.COUNTRY));
-//			address.setPincode(Long.parseLong(permanentAddressMap.get(Constants.PINCODE)));
-//			addresses.set(count++,address);
-//		}
-		// employee.setAddressList(employee.getAddressList());
+		Employee employeeData = employeeDaoImpl.getEmployeeById(employee.getId());
+		employee.setProjectList(employeeData.getProjectList());
 		boolean resultOfUpdateEmployee = employeeDaoImpl.updateEmployee(employee);
 		if (resultOfUpdateEmployee) {
 			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
@@ -197,7 +176,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Project project = projectServiceImpl.getProjectByProjectId(projectId);
 		Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
 		// Employee employee = employeeList.get(0);
-		List<Project> projectList = employee.getProjectList();
+		HashSet<Project> projectList = (HashSet<Project>) employee.getProjectList();
 		boolean flag = false;
 		if (projectList.contains(project)) {
 			flag = true;
@@ -225,7 +204,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Project project = projectServiceImpl.getProjectByProjectId(projectId);
 		Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
 		// Employee employee = employeeList.get(0);
-		List<Project> projectList = employee.getProjectList();
+		Set<Project> projectList = employee.getProjectList();
 		projectList.add(project);
 		employee.setProjectList(projectList);
 		boolean resultOfAssignEmployee = employeeDaoImpl.updateEmployee(employee);
@@ -286,18 +265,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public boolean isAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		boolean flag = false;
-		for (int id:projectIdList) {
+		for (int id : projectIdList) {
 			Project project = projectServiceImpl.getProjectByProjectId(id);
 			Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
-			// Employee employee = employeeList.get(0);
-			List<Project> projectList = employee.getProjectList();
+			Set<Project> projectList = employee.getProjectList();
 			if (projectList.contains(project)) {
 				flag = true;
 			} else {
 				assignProject(id, employeeId);
 			}
 		}
-		return flag;
+		return true;
 	}
 
 	/**
@@ -322,6 +300,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public boolean isPhoneNumberExist(long phoneNumber) throws EmployeeManagementException {
 		return employeeDaoImpl.isPhoneNumberExist(phoneNumber);
+	}
+
+	public List<Employee> getEmployees() throws EmployeeManagementException {
+		return employeeDaoImpl.getEmployees();
 	}
 
 	/**

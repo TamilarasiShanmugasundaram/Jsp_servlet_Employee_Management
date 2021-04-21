@@ -15,14 +15,12 @@
     <property name="client"  type="string" length="80" column="client"></property>  
     <property name="budget"  type="long"  column="budget"></property>  
     <property name="isDelete"  type="boolean"  column="is_delete"></property> 
-  
-   <list name="employeeList"  table="employee_project" lazy="false" >
+ 
+   <set name="employeeList"  table="employee_project" lazy="false" >
       <key>
         <column name="project_id"/>
       </key>
-      <index column = "idx"> </index>
       <many-to-many  class="com.ideas2it.employeeManagementSystem.employee.model.Employee" column="employee_id"/>
-   </list> 
-
+   </set> 
         </class>
     </hibernate-mapping>

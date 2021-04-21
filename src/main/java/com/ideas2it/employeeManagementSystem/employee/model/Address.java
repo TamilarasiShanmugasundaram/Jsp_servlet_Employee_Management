@@ -14,7 +14,7 @@ public class Address {
     public String country;
     public long pincode;
     int employeeId;
-    int addressId;
+    int id;
     boolean isDelete = false;
     boolean isPermanent = false;
 
@@ -68,8 +68,8 @@ public class Address {
         return pincode;
     }
 
-    public int getAddressId() {
-        return addressId;
+    public int getId() {
+        return id;
     }
 
     public int getEmployeeId() {
@@ -104,8 +104,8 @@ public class Address {
         this.pincode = pincode;
     }
 
-    public void setAddressId(int id) {
-        this.addressId = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setEmployeeId(int id) {

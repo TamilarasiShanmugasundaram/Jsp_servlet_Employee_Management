@@ -90,6 +90,7 @@ public interface EmployeeDao {
      *        return true if employee email id already exist otherwise false
      */ 
     public boolean isEmailExist(String emailId) throws EmployeeManagementException;
+    public List<Employee> getEmployees() throws EmployeeManagementException;
 
     /**
      * To identify the phone number id exists or not

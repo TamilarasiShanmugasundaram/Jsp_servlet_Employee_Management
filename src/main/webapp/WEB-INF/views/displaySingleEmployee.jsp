@@ -6,6 +6,7 @@
 <%@ page
 	import=" com.ideas2it.employeeManagementSystem.employee.model.Address"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.Set"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +28,7 @@
 	<%
 		//List<Employee> employeeList = 
 	Employee employee =(Employee) request.getAttribute("employee");
-	List<Project> projectList = employee.getProjectList();
+	
 	%>
 	<table BORDER=1>
 		<tr>
@@ -74,7 +75,7 @@
 
 
 	<%
-		System.out.println("view project : " + projectList.size());
+	Set<Project> projectList = employee.getProjectList();
 	if (0 < projectList.size()) {
 	%>
 
@@ -129,7 +130,8 @@
 			</td>
 		</tr>
 		<%
-			}	}
+	}	
+		}
 		%>
 	</table>
 

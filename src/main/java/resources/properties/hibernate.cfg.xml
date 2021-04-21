@@ -16,6 +16,7 @@
     <property name ="hibernate.connection.url">jdbc:mysql://localhost:3306/EmployeeManagementSystem</property>  
     <property name ="hibernate.connection.username">root</property>  
     <property name ="hibernate.connection.password">Tamilarasi@123</property>  
+  
 
     <!-- entity class-->
     <mapping resource="resources/classes/project.hbm.xml"/> 

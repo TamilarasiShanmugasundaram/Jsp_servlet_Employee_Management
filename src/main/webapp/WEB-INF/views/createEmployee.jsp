@@ -4,7 +4,7 @@
 <%@ page
 	import=" com.ideas2it.employeeManagementSystem.employee.model.Address"
 	import=" com.ideas2it.employeeManagementSystem.employee.model.Employee"%>
-<%@ page import="java.util.List"%>
+<%@ page import="java.util.HashSet"%>
 <%@ page import="java.time.LocalDate"%>
 
 <!DOCTYPE html>
@@ -27,6 +27,7 @@
 	<form:form action="CreateEmployee" method="post"
 		modelAttribute="employee">
 		<form:input type="hidden" id="id" path="id" />
+		
 		<table>
 			<tr>
 				<td><form:label path="name"> Name </form:label></td>
@@ -52,6 +53,10 @@
 			</tr>
 		</table>
 		<table>
+		<tr>
+		<td><form:input type="hidden" path="addressList[0].id"/> </td>
+	<td><form:input type="hidden" path="addressList[0].isPermanent"/> </td>
+		</tr>
 			<tr>
 				<td><form:label path="addressList[0].doorNumber"> Door number</form:label></td>
 				<td><form:input path="addressList[0].doorNumber"
@@ -84,12 +89,16 @@
 			</tr>
 											<tr>
 				<td><form:label path="addressList[0].pincode"> pincode</form:label></td>
-				<td><form:input path="addressList[0].pincode"
+				<td><form:input type="number" path="addressList[0].pincode"
 						required="required" /></td>
 			</tr>
 		</table>
 
 		<table>
+			<tr>
+		<td><form:input type="hidden" path="addressList[1].id"/> </td>
+		<td><form:input type="hidden" path="addressList[1].isPermanent"/> </td>
+		</tr>
 			<tr>
 				<td><form:label path="addressList[1].doorNumber"> Door number</form:label></td>
 				<td><form:input path="addressList[1].doorNumber"
@@ -122,7 +131,7 @@
 			</tr>
 											<tr>
 				<td><form:label path="addressList[1].pincode"> pincode</form:label></td>
-				<td><form:input path="addressList[1].pincode"
+				<td><form:input type="number" path="addressList[1].pincode"
 						required="required" /></td>
 			</tr>
 		</table>
@@ -130,7 +139,10 @@
 		<%if(employee.getId() == 0)  {%>
 			<input type="submit" value="Create"/>
 	<%	}%>	
-				<%if(employee.getId() != 0)  {%>
+				<%if(employee.getId() != 0)  {
+				for(int i = 0; i < employee.getAddressList().size(); i++) {
+				employee.setAddressList(employee.getAddressList());
+				}%>
 			<button type="submit" formaction="UpdateEmployee"> Update </button>
 	<%	}%>			
 		

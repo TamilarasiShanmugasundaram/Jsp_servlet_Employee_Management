@@ -3,7 +3,7 @@
 <%@ page
 	import=" com.ideas2it.employeeManagementSystem.project.model.Project"
 	import=" com.ideas2it.employeeManagementSystem.employee.model.Employee"%>
-<%@ page import="java.util.List"%>
+<%@ page import="java.util.Set"%>
 
 <!DOCTYPE html>
 <html>
@@ -25,7 +25,7 @@
 	</form>
 	<%
 		Project project = (Project) request.getAttribute("project");
-	    List<Employee> employeeList = project.getEmployeeList();
+	    Set<Employee> employeeList = project.getEmployeeList();
 	%>
 	<table BORDER=1>
 		<tr>

@@ -20,22 +20,22 @@
 			@SuppressWarnings("unchecked")
 		List<Project> projectList = (List<Project>) request.getAttribute("Projects");
 		%>
-		<label>Enter Employee id : </label> <input type="text"
+		<label>Enter Employee id : </label> <input type="number"
 			name="employeeId" required><br>
 		<%
-			for (Project tempProjectList : projectList) {
+			for (Project tempProject : projectList) {
+			
 		%>
 		<p>
-			<input type="checkbox" name="projectIds"
-				value="<%tempProjectList.getProjectId();%>">
+			<input type="checkbox"  name="projectIds"
+				value="<%=tempProject.getProjectId()%>">
 			<%
-				out.println(tempProjectList.getTitle());
-			%>
-		</p>
-		<%
+				out.println(tempProject.getTitle());
 			}
 		%>
-		<br> <input type="submit" name="operation" value="AssignProject">
+		</p>
+			<input type="submit" name="operation" value="AssignProject">
+		<br> 
 	</form>
 </body>
 </html>

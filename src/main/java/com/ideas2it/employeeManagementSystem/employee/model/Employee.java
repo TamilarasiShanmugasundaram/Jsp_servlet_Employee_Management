@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
 
 import com.ideas2it.employeeManagementSystem.employee.model.Address;
 import com.ideas2it.employeeManagementSystem.project.model.Project;
@@ -21,7 +23,7 @@ public class Employee {
     long phoneNumber;
     int id;
     List<Address> addressList= new ArrayList<Address>();
-    List<Project> projectList = new ArrayList<Project>(); 
+    Set<Project> projectList = new HashSet<Project>(); 
     boolean isDelete = false;   
 
     public Employee() {
@@ -43,7 +45,7 @@ public class Employee {
         return addressList;
     }
 
-    public List<Project> getProjectList() {
+    public Set<Project> getProjectList() {
         return projectList;
     }
 
@@ -100,8 +102,8 @@ public class Employee {
         this.addressList = addressList;
     }
 
-    public void setProjectList(List<Project> projectList) {
-        this.projectList = projectList;
+    public void setProjectList(Set<Project> project) {
+        this.projectList = project;
     }
 
     public void setIsDelete(boolean isDelete) {

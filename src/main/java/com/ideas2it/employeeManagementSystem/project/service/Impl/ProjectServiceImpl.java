@@ -1,6 +1,8 @@
 package com.ideas2it.employeeManagementSystem.project.service.Impl;
 
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 import com.ideas2it.employeeManagementSystem.constants.Constants;
@@ -28,9 +30,10 @@ public class ProjectServiceImpl implements ProjectService {
 	 */
 	@Override
 	public boolean createProject(Project project) throws EmployeeManagementException {
-	//	Date startDate = Date.valueOf(startDateString);
-		//Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		//Project project = new Project(project.getTitle(), project, estimateEndDateString, status, client, budget);
+		// Date startDate = Date.valueOf(startDateString);
+		// Date estimateEndDate = Date.valueOf(estimateEndDateString);
+		// Project project = new Project(project.getTitle(), project,
+		// estimateEndDateString, status, client, budget);
 		project.getIsDelete();
 		boolean resultOfCreateProject = projectDaoImpl.createProject(project);
 		if (resultOfCreateProject) {
@@ -45,20 +48,20 @@ public class ProjectServiceImpl implements ProjectService {
 	 */
 	@Override
 	public boolean deleteProject(int id) throws EmployeeManagementException {
-		Project project  = projectDaoImpl.getProjectByProjectId(id);
+		Project project = projectDaoImpl.getProjectByProjectId(id);
 		project.setIsDelete(true);
 		boolean resultOfDeleteProject = projectDaoImpl.updateProject(project);
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
 		List<Employee> employeeList = employeeServiceImpl.getEmployeeDetails();
-		for(Employee employee : employeeList) {
-			List<Project> projects = employee.getProjectList();
-			if(projects.contains(project)) {
+		for (Employee employee : employeeList) {
+			Set<Project> projects = employee.getProjectList();
+			if (projects.contains(project)) {
 				projects.remove(project);
 				employee.setProjectList(projects);
 				employeeServiceImpl.updateEmployee(employee);
 			}
 		}
-		
+
 		if (resultOfDeleteProject) {
 			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.DELETE_SUCCESS);
@@ -71,9 +74,9 @@ public class ProjectServiceImpl implements ProjectService {
 	 */
 	@Override
 	public boolean updateAll(Project project) throws EmployeeManagementException {
-		//Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		//Date startDate = Date.valueOf(startDateString);
-		//Project project = projectDaoImpl.getProjectByProjectId(id);
+		// Date estimateEndDate = Date.valueOf(estimateEndDateString);
+		// Date startDate = Date.valueOf(startDateString);
+		// Project project = projectDaoImpl.getProjectByProjectId(id);
 //		project.setEstimatedEndDate(estimateEndDate);
 //		project.setClient(client);
 //		project.setStartDate(startDate);
@@ -96,6 +99,7 @@ public class ProjectServiceImpl implements ProjectService {
 	public boolean updateProject(Project project) throws EmployeeManagementException {
 		return projectDaoImpl.updateProject(project);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -116,11 +120,11 @@ public class ProjectServiceImpl implements ProjectService {
 	public boolean assignEmployee(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
 		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
-		//Employee employee = singleEmployee.get(0);
+		// Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = project.getEmployeeList();
-		employeeList.add(employee);
-		project.setEmployeeList(employeeList);
+		Set<Employee> employees = project.getEmployeeList();
+		employees.add(employee);
+		project.setEmployeeList(employees);
 		boolean resultOfAssignProject = projectDaoImpl.updateProject(project);
 		if (resultOfAssignProject) {
 			employeeManagementLogger.logClassname("projectServiceImpl");
@@ -136,9 +140,9 @@ public class ProjectServiceImpl implements ProjectService {
 	public boolean unassignEmployee(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
 		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
-		//Employee employee = singleEmployee.get(0);
+		// Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = project.getEmployeeList();
+		Set<Employee> employeeList = project.getEmployeeList();
 		boolean flag = false;
 		if (employeeList.contains(employee)) {
 			flag = true;
@@ -157,15 +161,18 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	}
 
-	public boolean isAssignExist(int employeeId, int projectId) throws EmployeeManagementException {
+	public boolean isAssignExist(int projectId, List<Integer> employeeIdList) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
-		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
-		//Employee employee = singleEmployee.get(0);
-		Project project = projectDaoImpl.getProjectByProjectId(projectId);
-		List<Employee> employeeList = project.getEmployeeList();
 		boolean flag = false;
-		if (employeeList.contains(employee)) {
-			flag = true;
+		for (int id : employeeIdList) {
+			Employee employee = employeeServiceImpl.getEmployeeById(id);
+			Project project = projectDaoImpl.getProjectByProjectId(projectId);
+			Set<Employee> employeeList = project.getEmployeeList();
+			if (employeeList.contains(employee)) {
+				flag = true;
+			} else {
+				assignEmployee(id, projectId);
+			}
 		}
 		return flag;
 	}
@@ -247,9 +254,11 @@ public class ProjectServiceImpl implements ProjectService {
 			return exception.getMessage();
 		}
 	}
+
 	public List<Project> getProjects() throws EmployeeManagementException {
 		return projectDaoImpl.getProjects();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

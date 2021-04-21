@@ -14,21 +14,20 @@
     <property name="dateOfJoining" type="date" column="date_of_joining"></property>  
     <property name="phoneNumber" type="long"  column="phone_number"></property>  
         <property name="isDelete"  type="boolean"  column="is_delete"></property> 
-    <list name="addressList"  cascade="all" lazy="false">
+    <list name="addressList" cascade="all" lazy="false">
       <key>
-        <column name="employee_id"  />
+        <column name="employee_id"/>
       </key>
       <index column = "idx" > </index>
       <one-to-many class="com.ideas2it.employeeManagementSystem.employee.model.Address" />
    </list>
 
-   <list name="projectList"  table="employee_project" lazy="false">
+   <set name="projectList"  table="employee_project" lazy="false">
       <key>
         <column name="employee_id"/>
       </key>
-      <index column = "idx"> </index>
       <many-to-many  class="com.ideas2it.employeeManagementSystem.project.model.Project" column="project_id"/>
-   </list>
+   </set>
 
       </class>
  </hibernate-mapping>

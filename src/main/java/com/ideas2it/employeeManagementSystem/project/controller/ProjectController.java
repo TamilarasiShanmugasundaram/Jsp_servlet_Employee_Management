@@ -32,113 +32,151 @@ public class ProjectController {
 	ModelAndView modelAndview = new ModelAndView();
 
 	/**
-	 * To create the project
+	 * To map the employee jsp
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * return String provides the view name
 	 */
-	@RequestMapping(value = "/createProject", method = RequestMethod.POST)
-	public ModelAndView createProject(@ModelAttribute("project") Project project) {
+	@GetMapping(value ={"/", Constants.INDEX})
+	public String getIndex() {
+		return Constants.INDEX;
+	}
+	
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(Constants.PROJECT_URL)
+	public String requestProject() {
+		return Constants.PROJECT;
+	}
+
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@RequestMapping(value = Constants.GET_PROJECT_FOR_UPDATE_URL)
+	public String getProjectForUpdate() {
+		 return Constants.GET_PROJECT_FOR_UPDATE;
+	}
+	
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(Constants.GETID_FOR_DELETE_PROJECT)
+	public String getIdfordeleteProject() {
+		return Constants.DELETE_PROJECT;
+	}
+
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(value = Constants.GET_PROJECTID_FOR_DISPLAY)
+	public String getProjectIdForDisplay() {
+		return Constants.GET_PROJECTID;
+	}
+
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(Constants.GETID_FOR_PROJECT_UPDATE_URL)
+	public String getIdForProjectUpdate() {
+		return Constants.GETID_FOR_PROJECT_UPDATE;
+	}
+
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return ModelAndView provides both model view name
+	 */
+	@GetMapping(Constants.ASSIGN_EMPLOYEE_URL)
+	public ModelAndView assignEmployee() {
 		try {
-			boolean statusOfCreateProject = projectServiceImpl.createProject(project);
-			if (statusOfCreateProject) {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_SUCCESS);
-			} else {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_FAILURE);
-			}
+			EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
+			modelAndview.setViewName(Constants.ASSIGN_EMPLOYEE);
+			modelAndview.addObject(Constants.EMPLOYEES, employeeServiceImpl.getEmployees());
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
 
-	@GetMapping("/index")
-	public ModelAndView viewIndex() {
-		modelAndview.setViewName("index");
-		return modelAndview;
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(Constants.UNASSIGN_EMPLOYEE_GET_URL)
+	public String unassignEmployee() {
+		return Constants.UNASSIGN_EMPLOYEE;
 	}
 
-	@GetMapping("/")
-	public ModelAndView getIndex() {
-		modelAndview.setViewName("index");
-		return modelAndview;
-	}
-	
-	@GetMapping("/Project")
-	public ModelAndView requestProject() {
-		modelAndview.setViewName("project");
-		return modelAndview;
+	/**
+	 * To map the employee jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@GetMapping(Constants.RETRIEVE_PROJECT_URL)
+	public String retrieveProject() {
+		return Constants.RETRIEVE_PROJECT;
 	}
 
-	@RequestMapping(value = "/getProjectForUpdate")
-	public ModelAndView getProjectForUpdate() {
-		 modelAndview.setViewName("getProjectForUpdate");
-		 return modelAndview;
+	/**
+	 * To create the project
+	 * 
+	 * @param project provides the project object
+	 * return ModelAndView provides both model and view
+	 */
+	@RequestMapping(value = Constants.CREATE_PROJECT_POST_URL, method = RequestMethod.POST)
+	public ModelAndView createProject(@ModelAttribute(Constants.PROJECT) Project project) {
+		try {
+			boolean statusOfCreateProject = projectServiceImpl.createProject(project);
+			if (statusOfCreateProject) {
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_SUCCESS);
+			} else {
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_FAILURE);
+			}
+		} catch (EmployeeManagementException exception) {
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		}
+		return modelAndview;
 	}
 	
 	/**
 	 * To delete the project
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param id provides the project id return ModelAndView provides both model
+	 *           and view
 	 */
-	@GetMapping("/getIdfordeleteProject")
-	public ModelAndView getIdfordeleteProject() {
-		modelAndview.setViewName("deleteProject");
-		return modelAndview;
-	}
-
-	@GetMapping(value = "/getProjectIdForDisplay")
-	public ModelAndView getProjectIdForDisplay() {
-		modelAndview.setViewName("getProjectId");
-		return modelAndview;
-	}
-
-	@GetMapping("/getIdForProjectUpdate")
-	public ModelAndView getIdForProjectUpdate() {
-		modelAndview.setViewName("getIdForProjectUpdate");
-		return modelAndview;
-	}
-
-	@GetMapping("/assignEmployee")
-	public ModelAndView assignEmployee() {
-		modelAndview.setViewName("assignEmployee");
-		return modelAndview;
-	}
-
-	@GetMapping("/unassignEmployee")
-	public ModelAndView unassignEmployee() {
-		modelAndview.setViewName("unassignEmployee");
-		return modelAndview;
-	}
-
-	@GetMapping("/retrieveProject")
-	public ModelAndView retrieveProject() {
-		modelAndview.setViewName("retrieveProject");
-		return modelAndview;
-	}
-
-	@RequestMapping(value = "/DeleteProject", method = RequestMethod.POST)
+	@RequestMapping(value = Constants.DELETE_PROJECT_POST_URL, method = RequestMethod.POST)
 	public ModelAndView deleteProject(@RequestParam(Constants.ID) int id) {
 		try {
 			if (projectServiceImpl.isProjectExist(id)) {
 				boolean statusOfDeleteProject = projectServiceImpl.deleteProject(id);
 				if (statusOfDeleteProject) {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.DELETE_SUCCESS);
 				} else {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.DELETE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
@@ -147,51 +185,51 @@ public class ProjectController {
 	/**
 	 * To update the project
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param id provides the project id
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/UpdateProject", method = RequestMethod.POST)
+	@RequestMapping(value = Constants.GET_PROJECT_POST_URL, method = RequestMethod.POST)
 	public ModelAndView update(@RequestParam(Constants.ID) int id) {
 		try {
 			if (projectServiceImpl.isProjectExist(id)) {
 				Project project = projectServiceImpl.getProjectByProjectId(id);
-				modelAndview.setViewName("createProject");
-				modelAndview.addObject("project", project);
+				modelAndview.setViewName(Constants.CREATE_PROJECT);
+				modelAndview.addObject(Constants.PROJECT, project);
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
 	
 	/**
-	 * To update the status of the project
+	 * To update the project
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param project provides the project object
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public ModelAndView updateAll(@ModelAttribute("project") Project project) {
+	@RequestMapping(value = Constants.UPDATE_PROJECT_POST_URL, method = RequestMethod.POST)
+	public ModelAndView updateAll(@ModelAttribute(Constants.PROJECT) Project project) {
 		try {
 			if (projectServiceImpl.isProjectExist(project.getProjectId())) {
 				boolean statusOfUpdateProject = projectServiceImpl.updateAll(project);
 				if (statusOfUpdateProject) {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.UPDATE_SUCCESS);
 				} else {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.UPDATE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
@@ -200,22 +238,22 @@ public class ProjectController {
 	/**
 	 * To get project by projectId
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param id provides the project id
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/displaySingleProject", method = RequestMethod.GET)
+	@RequestMapping(value = Constants.DISPLAY_SINGLE_PROJECT_POST_URL, method = RequestMethod.GET)
 	public ModelAndView getProjectByProjectId(@RequestParam(Constants.ID) int id) {
 		try {
 			if (projectServiceImpl.isProjectExist(id)) {
 				Project project = projectServiceImpl.getProjectByProjectId(id);
-				modelAndview.setViewName("displaySingleProject");
+				modelAndview.setViewName(Constants.DISPLAY_SINGLE_PROJECT);
 				modelAndview.addObject(Constants.PROJECT, project);
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
@@ -224,54 +262,37 @@ public class ProjectController {
 	/**
 	 * To assign project for employee
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param projectId provides the project id
+	 * @param employeeIdList provides the list of employee id
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/AssignEmployee", method = RequestMethod.POST)
-	public ModelAndView assignEmployee(@RequestParam(Constants.EMPLOYEE_ID) int employeeId,
+	@RequestMapping(value = Constants.ASSIGN_EMPLOYEE_POST_URL, method = RequestMethod.POST)
+	public ModelAndView assignEmployee(@RequestParam("employeeIds") List<Integer> employeeIdList,
 			@RequestParam(Constants.PROJECT_ID) int projectId) {
 		try {
-			System.out.println(projectServiceImpl.isProjectExist(projectId));
 			if (projectServiceImpl.isProjectExist(projectId)) {
-				EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
-				if (employeeServiceImpl.isEmployeeExist(employeeId)) {
-					if (projectServiceImpl.isAssignExist(employeeId, projectId)) {
-						modelAndview.setViewName("displayMessages");
-						modelAndview.addObject(Constants.MESSAGE, Constants.ALREADY_ASSIGN);
-					} else {
-						if (projectServiceImpl.assignEmployee(employeeId, projectId)) {
-							modelAndview.setViewName("displayMessages");
-							modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_SUCCESS);
-						} else {
-							modelAndview.setViewName("displayMessages");
-							modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_FAILURE);
-						}
-					}
-				} else {
-					modelAndview.setViewName("displayMessages");
-					modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
-				}
+				projectServiceImpl.isAssignExist(projectId, employeeIdList);
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+				modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_SUCCESS);	
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
-		// RequestDispatcher requetsDispatcher =
-		// request.getRequestDispatcher("/displayMessages.jsp");
-		// requetsDispatcher.forward(request, response);
 		return modelAndview;
 	}
 
 	/**
 	 * To unassign project for employee
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param projectId provides the project id
+	 * @param employeeId provides the employee id
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/UnassignEmployee", method = RequestMethod.POST)
+	@RequestMapping(value = Constants.UNASSIGN_EMPLOYEE_URL, method = RequestMethod.POST)
 	public ModelAndView unassignEmployee(@RequestParam(Constants.EMPLOYEE_ID) int employeeId,
 			@RequestParam(Constants.PROJECT_ID) int projectId) {
 		try {
@@ -280,22 +301,22 @@ public class ProjectController {
 				if (employeeServiceImpl.isEmployeeExist(employeeId)) {
 					boolean statusOfUnassignProject = projectServiceImpl.unassignEmployee(employeeId, projectId);
 					if (statusOfUnassignProject) {
-						modelAndview.setViewName("displayMessages");
+						modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 						modelAndview.addObject(Constants.MESSAGE, Constants.UNASSIGN_SUCCESS);
 					} else {
-						modelAndview.setViewName("displayMessages");
+						modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 						modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_ASSIGN);
 					}
 				} else {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
 				}
 			} else {
-				modelAndview.setViewName("displayMessages");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
@@ -304,81 +325,81 @@ public class ProjectController {
 	/**
 	 * To retrieve project
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * @param projectId provides the project id
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/retrieve", method = RequestMethod.POST)
+	@RequestMapping(value = Constants.RETRIEVE_PROJECT_POST_URL, method = RequestMethod.POST)
 	public ModelAndView retrieveProject(@RequestParam(Constants.ID) int id) {
 		try {
-			//Project project = projectServiceImpl.isProjectExist(id);
 			if (false == projectServiceImpl.isProjectExist(id)) {
 				boolean statusOfRetrieveProject = projectServiceImpl.retrieveProject(id);
 				if (statusOfRetrieveProject) {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_SUCCESS);
 				} else {
-					modelAndview.setViewName("displayMessages");
+					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName("displayMessages");
-				modelAndview.addObject(Constants.MESSAGE, "This project is not deleted!!");
+				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+				modelAndview.addObject(Constants.MESSAGE, Constants.PROJECT_NOT_DELETED);
 			}
 
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
 
 	/**
-	 * To get project details return List<Project> provides the list of Project
+	 * To get project details 
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/Retrieve", method = RequestMethod.GET)
+	@RequestMapping(value = Constants.RETRIEVE_PROJECT_GET_URL, method = RequestMethod.GET)
 	public ModelAndView getDeletedProjects() {
 		try {
 			List<Project> projectList = projectServiceImpl.getDeletedProjects();
-			modelAndview.setViewName("displayDeletedProjects");
+			modelAndview.setViewName(Constants.DISPLAY_DELETED_PROJECTS);
 			modelAndview.addObject(Constants.DELETED_PROJECTS, projectList);
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
 
 	/**
-	 * To get deleted project return List<Project> provides the list of Project
+	 * To get deleted project 
 	 * 
-	 * @param request provides the http servlet request
-	 * @param request provides the http servlet response
+	 * return ModelAndView provides both model and view
 	 */
-	@RequestMapping(value = "/DisplayAllProject", method = RequestMethod.GET)
+	@RequestMapping(value = Constants.DISPLAY_ALL_PROJECT_URL, method = RequestMethod.GET)
 	public ModelAndView getProjectDetails() {
 		try {
 			List<Project> projectList = projectServiceImpl.getProjectDetails();
 			modelAndview.setViewName("displayProjects");
 			modelAndview.addObject(Constants.PROJECTS, projectList);
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName("displayMessages");
+			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
 			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
 
-	@RequestMapping(value = "/getProject")
+	/**
+	 * To get project object
+	 * 
+	 * return ModelAndView provides both model and view
+	 */
+	@RequestMapping(value = Constants.GET_PROJECT_URL)
 	public ModelAndView getProject() {
-		ModelAndView model = new ModelAndView("createProject");
-		model.addObject("project", new Project());
+		ModelAndView model = new ModelAndView(Constants.CREATE_PROJECT);
+		model.addObject(Constants.PROJECT, new Project());
 		return model;
 	}
-
-
-
+	
 	/**
 	 * To close the session factory
 	 */

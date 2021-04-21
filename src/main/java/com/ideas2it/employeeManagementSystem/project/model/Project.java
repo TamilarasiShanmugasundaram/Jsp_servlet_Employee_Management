@@ -1,9 +1,9 @@
 package com.ideas2it.employeeManagementSystem.project.model;
 
 import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
@@ -22,10 +22,11 @@ public class Project {
     String client;
     long budget;
     int projectId;
-    List<Employee> employeeList = new ArrayList<Employee>(); 
+    Set<Employee> employeeList = new HashSet<Employee>(); 
     boolean isDelete = false;
-
+    
     public Project() {
+    	
     }
 
     public Project(String title, Date startDate, Date estimatedEndDate, String status, String client, long budget) {
@@ -37,8 +38,12 @@ public class Project {
         this.budget = budget;
     }
 
-    public List<Employee> getEmployeeList() {
+    public Set<Employee> getEmployeeList() {
         return employeeList;
+    }
+    
+    public void setEmployeeList(Set<Employee> employeeList) {
+        this.employeeList = employeeList;
     }
 
     public boolean getIsDelete() {
@@ -98,10 +103,6 @@ public class Project {
 
     public void setProjectId(int id) {
         this.projectId = id;
-    }
-
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
     }
 
     public void setIsDelete(boolean isDelete) {
