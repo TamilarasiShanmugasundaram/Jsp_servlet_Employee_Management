@@ -22,7 +22,7 @@ import com.ideas2it.employeeManagementSystem.sessionFactory.Sessionfactory;
  * @author TamilarasiShanmugasundaram created 23-02-2021
  */
 public class EmployeeDaoImpl implements EmployeeDao {
-	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger();
+	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger(EmployeeDaoImpl.class);
 	Sessionfactory sessionfactory = Sessionfactory.getInstance();
 
 	/**
@@ -41,7 +41,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			return true;
 		} catch (HibernateException exception) {
 			sessionfactory.rollbackTransaction(transaction);
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -65,7 +64,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			return true;
 		} catch (HibernateException exception) {
 			sessionfactory.rollbackTransaction(transaction);
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -84,7 +82,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			session = factory.openSession();
 			return (Employee) session.createQuery(Constants.EMPLOYEE_EXIST_QUERY).setParameter(Constants.ID, id).uniqueResult();
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -102,9 +99,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
 			return  (Employee) session.createQuery(Constants.GET_DELETED_EMPLOYEE_BY_ID_QUERY).setParameter(Constants.ID, id).uniqueResult();
-			//return employee;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -121,11 +116,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			Query query = session.createQuery(Constants.EMPLOYEE_SELECT_QUERY);
+			Query query = session.createQuery("From Employee");
 			List<Employee> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -147,7 +141,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Address> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -169,7 +162,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Address> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -190,7 +182,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Employee> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -214,7 +205,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Employee> list = query.list();
 			return (0 < list.size());
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -237,7 +227,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Employee> employeeList = query.list();
 			return (0 < employeeList.size());
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -259,7 +248,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Employee> list = query.list();
 			return (0 < list.size());
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_DAO_IMPL);
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -276,7 +264,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			List<Employee> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("EmployeeDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {

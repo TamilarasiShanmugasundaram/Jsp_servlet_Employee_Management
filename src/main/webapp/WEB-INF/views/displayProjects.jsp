@@ -8,19 +8,19 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Display projects</title>
 </head>
 <body>
-<h1>Display projects</h1>
-	<form> 
-	<p>
-		<button formaction= "Project">Project</button>
+	<h1>Display projects</h1>
+	<form>
+		<p>
+			<button formaction="Project">Project</button>
 		</p>
 	</form>
-<form>
-	<p>
-		<button formaction="index">Go to main menu</button>
-	</p>
+	<form>
+		<p>
+			<button formaction="index">Go to main menu</button>
+		</p>
 	</form>
 	<%
 		@SuppressWarnings("unchecked")
@@ -34,21 +34,22 @@
 	%>
 
 
-	
+
 	<table BORDER=1>
 		<tr>
-		<th>ProjectId</th>
+			<th>ProjectId</th>
 			<th>Title</th>
 			<th>Start Date</th>
 			<th>Estimated end date</th>
 			<th>Client</th>
 			<th>Status</th>
 			<th>Budget</th>
+			<th>isDelete</th>
 		</tr>
-<%
-		for (Project tempProjectList : list) {
-	%>
-	
+		<%
+			for (Project tempProjectList : list) {
+		%>
+
 		<tr>
 			<td>
 				<%
@@ -85,12 +86,46 @@
 					out.print(tempProjectList.getBudget());
 				%>
 			</td>
+			<td>
+				<%
+					out.print(tempProjectList.getIsDelete());
+				%>
+			</td>
+			<td>
+				<%
+					if (false == tempProjectList.getIsDelete()) {
+				%>
+				<form action="DeleteProject" method="post">
+					<button type="submit" name="id"
+						value="<%=tempProjectList.getProjectId()%>">Delete</button>
+				</form> <%
+ 	} else {
+ %>
+				<form action="retrieve" method="post">
+					<button type="submit" name="id"
+						value="<%=tempProjectList.getProjectId()%>">Retrieve</button>
+				</form> <%
+ 	}
+ %>
+			</td>
+			<td>
+				<form action="UpdateProject" method="post">
+					<button type="submit" name="id"
+						value="<%=tempProjectList.getProjectId()%>">Update</button>
+				</form>
+			</td>
+			<td>
+					<form action="assignEmployee" method="post">
+					<button type="submit" name="id"
+						value="<%=tempProjectList.getProjectId()%>">Assign/Unassign</button>
+				</form>
+			</td>
 		</tr>
-			<%
-		}
+		<%
+			}
 
-	}
-	%>
+		}
+		%>
 	</table>
 
 

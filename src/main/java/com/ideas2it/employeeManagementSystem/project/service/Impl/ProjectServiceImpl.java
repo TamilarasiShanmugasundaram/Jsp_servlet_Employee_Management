@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.ideas2it.employeeManagementSystem.constants.Constants;
 import com.ideas2it.employeeManagementSystem.customException.EmployeeManagementException;
+import com.ideas2it.employeeManagementSystem.employee.dao.Impl.EmployeeDaoImpl;
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
 import com.ideas2it.employeeManagementSystem.employee.service.EmployeeService;
 import com.ideas2it.employeeManagementSystem.employee.service.Impl.EmployeeServiceImpl;
@@ -22,7 +23,7 @@ import com.ideas2it.employeeManagementSystem.project.service.ProjectService;
  * @author Tamilarasi Shanmugasundaram created 05-03-2021
  */
 public class ProjectServiceImpl implements ProjectService {
-	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger();
+	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger(ProjectServiceImpl.class);
 	ProjectDao projectDaoImpl = new ProjectDaoImpl();
 
 	/**
@@ -30,14 +31,9 @@ public class ProjectServiceImpl implements ProjectService {
 	 */
 	@Override
 	public boolean createProject(Project project) throws EmployeeManagementException {
-		// Date startDate = Date.valueOf(startDateString);
-		// Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		// Project project = new Project(project.getTitle(), project,
-		// estimateEndDateString, status, client, budget);
 		project.getIsDelete();
 		boolean resultOfCreateProject = projectDaoImpl.createProject(project);
 		if (resultOfCreateProject) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.ADD_SUCCESS);
 		}
 		return resultOfCreateProject;
@@ -61,9 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
 				employeeServiceImpl.updateEmployee(employee);
 			}
 		}
-
 		if (resultOfDeleteProject) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.DELETE_SUCCESS);
 		}
 		return resultOfDeleteProject;
@@ -74,19 +68,8 @@ public class ProjectServiceImpl implements ProjectService {
 	 */
 	@Override
 	public boolean updateAll(Project project) throws EmployeeManagementException {
-		// Date estimateEndDate = Date.valueOf(estimateEndDateString);
-		// Date startDate = Date.valueOf(startDateString);
-		// Project project = projectDaoImpl.getProjectByProjectId(id);
-//		project.setEstimatedEndDate(estimateEndDate);
-//		project.setClient(client);
-//		project.setStartDate(startDate);
-//		project.setBudget(budget);
-//		project.setTitle(title);
-//		project.setStatus(status);
-//		project.setProjectId(id);
 		boolean resultOfUpdateProject = projectDaoImpl.updateProject(project);
 		if (resultOfUpdateProject) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.UPDATE_SUCCESS);
 		}
 		return resultOfUpdateProject;
@@ -107,7 +90,6 @@ public class ProjectServiceImpl implements ProjectService {
 	public Project getProjectByProjectId(int id) throws EmployeeManagementException {
 		Project project = projectDaoImpl.getProjectByProjectId(id);
 		if (null != project) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.GET_PROJECT_BY_ID_SUCCESS);
 		}
 		return project;
@@ -120,14 +102,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public boolean assignEmployee(int employeeId, int projectId) throws EmployeeManagementException {
 		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
 		Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
-		// Employee employee = singleEmployee.get(0);
 		Project project = projectDaoImpl.getProjectByProjectId(projectId);
 		Set<Employee> employees = project.getEmployeeList();
 		employees.add(employee);
 		project.setEmployeeList(employees);
 		boolean resultOfAssignProject = projectDaoImpl.updateProject(project);
 		if (resultOfAssignProject) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.ASSIGN_SUCCESS);
 		}
 		return resultOfAssignProject;
@@ -152,7 +132,6 @@ public class ProjectServiceImpl implements ProjectService {
 			project.setEmployeeList(employeeList);
 			boolean resultOfUnassignProject = projectDaoImpl.updateProject(project);
 			if (resultOfUnassignProject) {
-				employeeManagementLogger.logClassname("projectServiceImpl");
 				employeeManagementLogger.logInfo(Constants.UNASSIGN_SUCCESS);
 			}
 			return resultOfUnassignProject;
@@ -161,18 +140,19 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	}
 
-	public boolean isAssignExist(int projectId, List<Integer> employeeIdList) throws EmployeeManagementException {
-		EmployeeService employeeServiceImpl = new EmployeeServiceImpl();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEmployeeAssignExist(int projectId, List<Integer> employeeIdList) throws EmployeeManagementException {
 		boolean flag = false;
+		Project project = projectDaoImpl.getProjectByProjectId(projectId);
+		Set<Employee> employeeListOfProject = project.getEmployeeList();
+		employeeListOfProject.clear();
+		project.setEmployeeList(employeeListOfProject);
+		projectDaoImpl.updateProject(project);
 		for (int id : employeeIdList) {
-			Employee employee = employeeServiceImpl.getEmployeeById(id);
-			Project project = projectDaoImpl.getProjectByProjectId(projectId);
-			Set<Employee> employeeList = project.getEmployeeList();
-			if (employeeList.contains(employee)) {
-				flag = true;
-			} else {
-				assignEmployee(id, projectId);
-			}
+			assignEmployee(id, projectId);
 		}
 		return flag;
 	}
@@ -184,7 +164,6 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<Project> getDeletedProjects() throws EmployeeManagementException {
 		List<Project> projectList = projectDaoImpl.getDeletedProjects();
 		if (0 < projectList.size()) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.GET_DELETED_PROJECT_SUCCESS);
 		}
 		return projectList;
@@ -200,7 +179,6 @@ public class ProjectServiceImpl implements ProjectService {
 		project.setIsDelete(false);
 		boolean resultOfRetrirveProject = projectDaoImpl.updateProject(project);
 		if (resultOfRetrirveProject) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.RETRIEVE_SUCCESS);
 		}
 		return resultOfRetrirveProject;
@@ -213,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<Project> getProjectDetails() throws EmployeeManagementException {
 		List<Project> projectList = projectDaoImpl.getProjectDetails();
 		if (0 < projectList.size()) {
-			employeeManagementLogger.logClassname("projectServiceImpl");
 			employeeManagementLogger.logInfo(Constants.GET_ALL_PROJECT_SUCCESS);
 		}
 		return projectList;

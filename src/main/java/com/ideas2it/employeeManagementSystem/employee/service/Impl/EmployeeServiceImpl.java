@@ -16,6 +16,7 @@ import com.ideas2it.employeeManagementSystem.employee.model.Address;
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
 import com.ideas2it.employeeManagementSystem.employee.service.EmployeeService;
 import com.ideas2it.employeeManagementSystem.logger.EmployeeManagementLogger;
+import com.ideas2it.employeeManagementSystem.project.dao.Impl.ProjectDaoImpl;
 import com.ideas2it.employeeManagementSystem.project.model.Project;
 import com.ideas2it.employeeManagementSystem.project.service.ProjectService;
 import com.ideas2it.employeeManagementSystem.project.service.Impl.ProjectServiceImpl;
@@ -26,7 +27,7 @@ import com.ideas2it.employeeManagementSystem.project.service.Impl.ProjectService
  * @author TamilarasiShanmugasundaram created 05-03-2021
  */
 public class EmployeeServiceImpl implements EmployeeService {
-	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger();
+	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger(EmployeeServiceImpl.class);
 	EmployeeDao employeeDaoImpl = new EmployeeDaoImpl();
 
 	/**
@@ -76,7 +77,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setAddressList(addresses);
 		boolean resultOfCreateEmployee = employeeDaoImpl.createEmployee(employee);
 		if (resultOfCreateEmployee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.ADD_SUCCESS);
 		}
 		return resultOfCreateEmployee;
@@ -105,7 +105,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 			}
 		}
 		if (resultOfDeleteEmployee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.DELETE_SUCCESS);
 		}
 		return resultOfDeleteEmployee;
@@ -125,7 +124,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setIsDelete(false);
 		boolean resultOfRetrieveEmployee = employeeDaoImpl.updateEmployee(employee);
 		if (resultOfRetrieveEmployee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.RETRIEVE_SUCCESS);
 		}
 		return resultOfRetrieveEmployee;
@@ -140,7 +138,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setProjectList(employeeData.getProjectList());
 		boolean resultOfUpdateEmployee = employeeDaoImpl.updateEmployee(employee);
 		if (resultOfUpdateEmployee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.UPDATE_SUCCESS);
 		}
 		return resultOfUpdateEmployee;
@@ -153,7 +150,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<Address> getTemporaryAddressByEmployeeId(int id) throws EmployeeManagementException {
 		List<Address> addressList = employeeDaoImpl.getTemporaryAddressByEmployeeId(id);
 		if (0 < addressList.size()) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.GET_TEMPORARY_ADDRESS);
 		}
 		return addressList;
@@ -186,7 +182,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setProjectList(projectList);
 			boolean resultOfUnassignEmployee = employeeDaoImpl.updateEmployee(employee);
 			if (resultOfUnassignEmployee) {
-				employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 				employeeManagementLogger.logInfo(Constants.UNASSIGN_SUCCESS);
 			}
 			return resultOfUnassignEmployee;
@@ -209,7 +204,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setProjectList(projectList);
 		boolean resultOfAssignEmployee = employeeDaoImpl.updateEmployee(employee);
 		if (resultOfAssignEmployee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.ASSIGN_SUCCESS);
 		}
 		return resultOfAssignEmployee;
@@ -222,7 +216,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee getEmployeeById(int id) throws EmployeeManagementException {
 		Employee employee = employeeDaoImpl.getEmployeeById(id);
 		if (null != employee) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.GET_EMPLOYEE_BY_ID_SUCCESS);
 		}
 		return employee;
@@ -239,7 +232,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<Employee> getDeletedEmployees() throws EmployeeManagementException {
 		List<Employee> employeeList = employeeDaoImpl.getDeletedEmployees();
 		if (0 < employeeList.size()) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.GET_ALL_PROJECT_SUCCESS);
 		}
 		return employeeList;
@@ -252,7 +244,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public List<Employee> getEmployeeDetails() throws EmployeeManagementException {
 		List<Employee> employeeList = employeeDaoImpl.getEmployeeDetails();
 		if (0 < employeeList.size()) {
-			employeeManagementLogger.logClassname(Constants.EMPLOYEE_SERVICE_IMPL);
 			employeeManagementLogger.logInfo(Constants.GET_ALL_EMPLOYEE_SUCCESS);
 		}
 		return employeeList;
@@ -262,12 +253,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException {
+	public boolean isProjectAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException {
 		ProjectService projectServiceImpl = new ProjectServiceImpl();
 		boolean flag = false;
+		Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
+		Set<Project> projects = employee.getProjectList();
+		projects.clear();
+		employee.setProjectList(projects);
+		employeeDaoImpl.updateEmployee(employee);
 		for (int id : projectIdList) {
 			Project project = projectServiceImpl.getProjectByProjectId(id);
-			Employee employee = employeeDaoImpl.getEmployeeById(employeeId);
+			
 			Set<Project> projectList = employee.getProjectList();
 			if (projectList.contains(project)) {
 				flag = true;

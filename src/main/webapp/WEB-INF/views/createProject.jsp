@@ -3,12 +3,15 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page import=" com.ideas2it.employeeManagementSystem.project.model.Project"%>
 <%@ page import="java.sql.Date"%>
-<!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<title>Create project</title>
 </head>
+
 <body>
+
 		<form> 
 	<p>
 		<button formaction= "Project">Project</button>

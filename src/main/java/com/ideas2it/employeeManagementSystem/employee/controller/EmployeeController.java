@@ -37,65 +37,7 @@ public class EmployeeController {
 	public String requestProject() {
 		return Constants.EMPLOYEE;
 	}
-
-	/**
-	 * To map the deleteEmployee jsp
-	 * 
-	 * return String provides the view name
-	 */
-	@GetMapping(Constants.DELETE_EMPLOYEE_URL)
-	public String deleteEmployee() {
-		return Constants.DELETE_EMPLOYEE;
-	}
-
-	/**
-	 * To map the getIdForEmployeeUpdate jsp
-	 * 
-	 * return String provides the view name
-	 */
-	@GetMapping(Constants.GETID_UPDATE_URL)
-	public String getIdForEmployeeUpdate() {
-		return Constants.GETID_UPDATE;
-	}
-
-	/**
-	 * To map the assignProject jsp
-	 * 
-	 * return String provides the view name
-	 */
-	@GetMapping(Constants.ASSIGN_PROJECT_URL)
-	public ModelAndView assignProject() {
-		try {
-			ProjectService projectServiceImpl = new ProjectServiceImpl();
-			modelAndview.setViewName(Constants.ASSIGN_PROJECT);
-			modelAndview.addObject(Constants.PROJECTS, projectServiceImpl.getProjects());
-		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		}
-		return modelAndview;
-	}
-
-	/**
-	 * To map the assignProject jsp
-	 * 
-	 * return String provides the view name
-	 */
-	@GetMapping(Constants.UNASSIGN_PROJECT_URL)
-	public String unassignProject() {
-		return Constants.UNASSIGN_PROJECT;
-	}
-
-	/**
-	 * To map the assignProject jsp
-	 * 
-	 * return String provides the view name
-	 */
-	@GetMapping(Constants.RETRIEVE_EMPLOYEE_URL)
-	public String retrieveEmployee() {
-		return Constants.RETRIEVE_EMPLOYEE;
-	}
-
+	
 	/**
 	 * To map the assignProject jsp
 	 * 
@@ -105,6 +47,28 @@ public class EmployeeController {
 	public String getEmployeeId() {
 		return Constants.GET_EMPLOYEEID;
 	}
+	
+	/**
+	 * To map the assignProject jsp
+	 * 
+	 * return String provides the view name
+	 */
+	@RequestMapping(value = Constants.ASSIGN_PROJECT_URL, method = RequestMethod.POST)
+	public ModelAndView assignProject(@RequestParam(Constants.ID) int employeeId) {
+		try {
+			if (employeeServiceImpl.isEmployeeExist(employeeId)) {
+				ProjectService projectServiceImpl = new ProjectServiceImpl();
+				modelAndview.setViewName(Constants.ASSIGN_PROJECT);
+				modelAndview.addObject(Constants.PROJECTS, projectServiceImpl.getProjects());
+				modelAndview.addObject(Constants.EMPLOYEE, employeeServiceImpl.getEmployeeById(employeeId));
+			} else {
+				displayMessages(Constants.EMPLOYEE_NOT_EXIST);
+			}
+		} catch (EmployeeManagementException exception) {
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		}
+		return modelAndview;
+	}
 
 	/**
 	 * To create the employee
@@ -113,22 +77,32 @@ public class EmployeeController {
 	 *                 both model and view
 	 */
 	@RequestMapping(value = Constants.CREATE_EMPLOYEE_URL, method = RequestMethod.POST)
-	public ModelAndView createEmployee(@ModelAttribute(Constants.EMPLOYEE) Employee employee) {
+	public String createEmployee(@ModelAttribute(Constants.EMPLOYEE) Employee employee) {
 		try {
 			Map<String, String> isValid = employeeServiceImpl.validate(String.valueOf(employee.getPhoneNumber()),
 					employee.getEmailId());
 			if (Constants.TRUE == isValid.get(Constants.BOOLEAN)) {
-				employeeServiceImpl.createEmployee(employee, employee.getAddressList());
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.ADD_SUCCESS);
-			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, isValid.get(Constants.MESSAGE));
+				if (false == employeeServiceImpl.createEmployee(employee, employee.getAddressList())) {
+					displayMessages(Constants.ADD_FAILURE);
+				} else {
+					displayMessages(isValid.get(Constants.MESSAGE));
+				}
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
+		return "redirect:/displayAllEmployee";
+	}
+
+	/**
+	 * To display messages to UI
+	 * 
+	 * @param message provides the message dispaly to UI return ModelAndView
+	 *                provides both model and view
+	 */
+	public ModelAndView displayMessages(String message) {
+		modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
+		modelAndview.addObject(Constants.MESSAGE, message);
 		return modelAndview;
 	}
 
@@ -144,19 +118,17 @@ public class EmployeeController {
 			if (employeeServiceImpl.isEmployeeExist(id)) {
 				boolean statusOfDeleteEmployee = employeeServiceImpl.deleteEmployee(id);
 				if (statusOfDeleteEmployee) {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.DELETE_SUCCESS);
+					List<Employee> employeeList = employeeServiceImpl.getEmployeeDetails();
+					modelAndview.setViewName(Constants.DISPLAY_EMPLOYEES);
+					modelAndview.addObject(Constants.EMPLOYEES, employeeList);
 				} else {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.DELETE_FAILURE);
+					displayMessages(Constants.DELETE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
+				displayMessages(Constants.EMPLOYEE_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -174,12 +146,10 @@ public class EmployeeController {
 				modelAndview.setViewName(Constants.CREATE_EMPLOYEE);
 				modelAndview.addObject(Constants.EMPLOYEE, employeeServiceImpl.getEmployeeById(id));
 			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
+				displayMessages(Constants.EMPLOYEE_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -196,19 +166,17 @@ public class EmployeeController {
 			if (employeeServiceImpl.isEmployeeExist(employee.getId())) {
 				boolean statusOfUpdateEmployee = employeeServiceImpl.updateAll(employee);
 				if (statusOfUpdateEmployee) {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.UPDATE_SUCCESS);
+					Employee employeeData = employeeServiceImpl.getEmployeeById(employee.getId());
+					modelAndview.setViewName(Constants.DISPLAY_SINGLE_EMPLOYEE);
+					modelAndview.addObject(Constants.EMPLOYEE, employeeData);
 				} else {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.UPDATE_FAILURE);
+					displayMessages(Constants.UPDATE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
+				displayMessages(Constants.EMPLOYEE_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -225,44 +193,14 @@ public class EmployeeController {
 			@RequestParam(Constants.PROJECT_IDS) List<Integer> projectIdList) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(employeeId)) {
-				employeeServiceImpl.isAssignExist(employeeId, projectIdList);
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.ASSIGN_SUCCESS);
-			}
-		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		}
-		return modelAndview;
-	}
-
-	/**
-	 * To unassign employee for project
-	 * 
-	 * @param employeeId provides the employee id
-	 * @param projectI   provides project id return ModelAndView provides both model
-	 *                   and view
-	 */
-	@RequestMapping(value = Constants.UNASSIGN_PROJECT_POST_URL, method = RequestMethod.POST)
-	public ModelAndView unassignProject(@RequestParam(Constants.EMPLOYEE_ID) int employeeId,
-			@RequestParam(Constants.PROJECT_ID) int projectId) {
-		try {
-			if (employeeServiceImpl.isEmployeeExist(employeeId)) {
-				boolean statusOfUnassignProject = employeeServiceImpl.unassignProject(employeeId, projectId);
-				if (statusOfUnassignProject) {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.UNASSIGN_SUCCESS);
-				} else {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_ASSIGN);
+				if (employeeServiceImpl.isProjectAssignExist(employeeId, projectIdList)) {
+					Employee employee = employeeServiceImpl.getEmployeeById(employeeId);
+					modelAndview.setViewName(Constants.DISPLAY_SINGLE_EMPLOYEE);
+					modelAndview.addObject(Constants.EMPLOYEE, employee);
 				}
-			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -281,12 +219,10 @@ public class EmployeeController {
 				modelAndview.setViewName(Constants.DISPLAY_SINGLE_EMPLOYEE);
 				modelAndview.addObject(Constants.EMPLOYEE, employee);
 			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_EXIST);
+				displayMessages(Constants.EMPLOYEE_NOT_EXIST);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -303,8 +239,7 @@ public class EmployeeController {
 			modelAndview.setViewName(Constants.DISPLAY_EMPLOYEES);
 			modelAndview.addObject(Constants.EMPLOYEES, employeeList);
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -320,19 +255,17 @@ public class EmployeeController {
 		try {
 			if (false == employeeServiceImpl.isEmployeeExist(id)) {
 				if (employeeServiceImpl.retrieveEmployee(id)) {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_SUCCESS);
+					List<Employee> employeeList = employeeServiceImpl.getEmployeeDetails();
+					modelAndview.setViewName(Constants.DISPLAY_EMPLOYEES);
+					modelAndview.addObject(Constants.EMPLOYEES, employeeList);
 				} else {
-					modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-					modelAndview.addObject(Constants.MESSAGE, Constants.RETRIEVE_FAILURE);
+					displayMessages(Constants.RETRIEVE_FAILURE);
 				}
 			} else {
-				modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-				modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_NOT_DELETED);
+				displayMessages(Constants.EMPLOYEE_NOT_DELETED);
 			}
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}
@@ -349,8 +282,7 @@ public class EmployeeController {
 			modelAndview.setViewName(Constants.DISPLAY_DELETED_EMPLOYEES);
 			modelAndview.addObject(Constants.DELETED_EMPLOYEES, employeeList);
 		} catch (EmployeeManagementException exception) {
-			modelAndview.setViewName(Constants.DISPLAY_MESSAGES);
-			modelAndview.addObject(Constants.MESSAGE, Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}
 		return modelAndview;
 	}

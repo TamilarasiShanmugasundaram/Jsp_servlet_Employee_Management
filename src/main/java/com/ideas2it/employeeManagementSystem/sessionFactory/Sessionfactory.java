@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction; 
 
 import com.ideas2it.employeeManagementSystem.constants.Constants;
+import com.ideas2it.employeeManagementSystem.employee.service.Impl.EmployeeServiceImpl;
 import com.ideas2it.employeeManagementSystem.logger.EmployeeManagementLogger;
 
 /**
@@ -14,7 +15,7 @@ import com.ideas2it.employeeManagementSystem.logger.EmployeeManagementLogger;
  * created 05-02-2021
  */
 public class Sessionfactory { 
-    EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger();
+	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger(Sessionfactory.class);
     private static Sessionfactory sessionFactory = null; 
     private static SessionFactory factory = null;
 
@@ -41,7 +42,6 @@ public class Sessionfactory {
             }
             return factory;
         } catch(Exception exception) { 
-            employeeManagementLogger.logClassname("Sessionfactory");
             employeeManagementLogger.logError(exception);  
             return null; 
         } 

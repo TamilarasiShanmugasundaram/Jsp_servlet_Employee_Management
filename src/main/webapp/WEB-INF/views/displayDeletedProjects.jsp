@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Display deleted projects</title>
 </head>
 <body>
 <h1>Display deleted projects</h1>

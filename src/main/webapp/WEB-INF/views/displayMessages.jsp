@@ -8,6 +8,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<title>Display Messages</title>
 </head>
 <body>
 	<form> 

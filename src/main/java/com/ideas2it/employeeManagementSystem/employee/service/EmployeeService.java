@@ -109,7 +109,7 @@ public interface EmployeeService {
      * return boolean 
      *       return true if project is assiged to employee otherwise return false
      */
-    public boolean isAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException;
+    public boolean isProjectAssignExist(int employeeId, List<Integer> projectIdList) throws EmployeeManagementException;
     
     /**
      * To assign employee for project
@@ -202,6 +202,12 @@ public interface EmployeeService {
      *        provides the Exception
      */ 
     public boolean isPhoneNumberExist(long phoneNumber) throws EmployeeManagementException;
+    
+    /**
+     * To get all details
+     * return List<Employee>
+     *        provides the list of employee
+     */  
     public List<Employee> getEmployees() throws EmployeeManagementException;
 
     /**

@@ -7,6 +7,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<title>Display deleted Employees</title>
 </head>
 <body>
 	<h1>Deleted employees</h1>

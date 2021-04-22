@@ -10,6 +10,7 @@ import org.hibernate.Transaction;
 
 import com.ideas2it.employeeManagementSystem.constants.Constants;
 import com.ideas2it.employeeManagementSystem.customException.EmployeeManagementException;
+import com.ideas2it.employeeManagementSystem.employee.dao.Impl.EmployeeDaoImpl;
 import com.ideas2it.employeeManagementSystem.employee.model.Employee;
 import com.ideas2it.employeeManagementSystem.logger.EmployeeManagementLogger;
 import com.ideas2it.employeeManagementSystem.project.dao.ProjectDao;
@@ -22,7 +23,7 @@ import com.ideas2it.employeeManagementSystem.sessionFactory.Sessionfactory;
  * @author Tamilarasi Shanmugasundaram created 03-02-2021
  */
 public class ProjectDaoImpl implements ProjectDao {
-	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger();
+	EmployeeManagementLogger employeeManagementLogger = new EmployeeManagementLogger(ProjectDaoImpl.class);
 	Sessionfactory sessionfactory = Sessionfactory.getInstance();
 
 	/**
@@ -32,21 +33,20 @@ public class ProjectDaoImpl implements ProjectDao {
 	public boolean createProject(Project project) throws EmployeeManagementException {
 		Session session = null;
 		Transaction transaction = null;
-		//try {
+		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
 			transaction = session.beginTransaction();
 			int id = (int) session.save(project);
 			transaction.commit();
 			return true;
-//		} catch (HibernateException exception) {
-//			sessionfactory.rollbackTransaction(transaction);
-//			employeeManagementLogger.logClassname("ProjectDaoImpl");
-//			employeeManagementLogger.logError(exception);
-//			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-//		} finally {
-//			sessionfactory.closeSession(session);
-//		}
+		} catch (HibernateException exception) {
+			sessionfactory.rollbackTransaction(transaction);
+			employeeManagementLogger.logError(exception);
+			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
+		} finally {
+			sessionfactory.closeSession(session);
+		}
 	}
 
 	/**
@@ -65,7 +65,6 @@ public class ProjectDaoImpl implements ProjectDao {
 			return true;
 		} catch (HibernateException exception) {
 			sessionfactory.rollbackTransaction(transaction);
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -82,15 +81,11 @@ public class ProjectDaoImpl implements ProjectDao {
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			//Project project = (Project) session.createQuery(Constants.PROJECT_EXIST_QUERY);
 			Project project = (Project) session.createQuery(Constants.PROJECT_EXIST_QUERY)
 					    .setParameter(Constants.ID, id)
 					    .uniqueResult();
-			//query.setParameter(Constants.ID, id);
-			//List<Project> project =  query.getResultList();
 			return project;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally { 	 	
@@ -111,7 +106,6 @@ public class ProjectDaoImpl implements ProjectDao {
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -128,11 +122,10 @@ public class ProjectDaoImpl implements ProjectDao {
 		try {
 			SessionFactory factory = sessionfactory.openSessionFactory();
 			session = factory.openSession();
-			Query query = session.createQuery(Constants.PROJECT_SELECT_QUERY);
+			Query query = session.createQuery("From Project");
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -154,7 +147,6 @@ public class ProjectDaoImpl implements ProjectDao {
 			List<Project> list = query.list();
 			return (0 < list.size());
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -176,7 +168,6 @@ public class ProjectDaoImpl implements ProjectDao {
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {
@@ -193,7 +184,6 @@ public class ProjectDaoImpl implements ProjectDao {
 			List<Project> list = query.list();
 			return list;
 		} catch (HibernateException exception) {
-			employeeManagementLogger.logClassname("ProjectDaoImpl");
 			employeeManagementLogger.logError(exception);
 			throw new EmployeeManagementException(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		} finally {

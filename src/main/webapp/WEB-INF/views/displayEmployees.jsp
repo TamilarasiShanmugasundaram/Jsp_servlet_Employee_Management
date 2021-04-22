@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Display Employees</title>
 </head>
 <body>
 	<h1>Display Employees</h1>
@@ -40,6 +40,7 @@
 			<th>EmailId</th>
 			<th>DOB</th>
 			<th>DOJ</th>
+			<th>IsDelete</th>
 		</tr>
 	
 	<%
@@ -76,6 +77,40 @@
 				<%
 					out.print(tempEmployeeList.getDateOfJoining());
 				%>
+			</td>
+						<td>
+				<%
+					out.print(tempEmployeeList.getIsDelete());
+				%>
+			</td>
+						<td>
+				<%
+					if (false == tempEmployeeList.getIsDelete()) {
+				%>
+				<form action="DeleteEmployee" method="post">
+					<button type="submit" name="id"
+						value="<%=tempEmployeeList.getId()%>">Delete</button>
+				</form> <%
+ 	} else {
+ %>
+				<form action="retrieveEmployee" method="post">
+					<button type="submit" name="id"
+						value="<%=tempEmployeeList.getId()%>">Retrieve</button>
+				</form> <%
+ 	}
+ %>
+			</td>
+					<td>
+				<form action="getEmployeeForUpdate" method="post">
+					<button type="submit" name="id"
+						value="<%=tempEmployeeList.getId()%>">Update</button>
+				</form>
+			</td>
+			<td>
+							<form action="assignProject" method="post">
+					<button type="submit" name="id"
+						value="<%=tempEmployeeList.getId()%>">Assign/Unassign</button>
+				</form>
 			</td>
 		</tr>
 		

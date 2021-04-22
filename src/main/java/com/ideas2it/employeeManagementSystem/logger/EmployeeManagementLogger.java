@@ -1,6 +1,8 @@
 package com.ideas2it.employeeManagementSystem.logger;
 
-import org.apache.log4j.Logger;  
+import org.apache.log4j.Logger;
+
+import com.ideas2it.employeeManagementSystem.employee.dao.Impl.EmployeeDaoImpl;  
 
 /**
  * To log the errors and info in file
@@ -10,14 +12,9 @@ import org.apache.log4j.Logger;
 public class EmployeeManagementLogger { 
     Logger log = null;
 
-    /**
-     * To log the class name in file
-     * @param String
-     *        provides the classname
-     */       
-    public void logClassname(String classname) {
-        log = Logger.getLogger(classname); 
-    }
+    public EmployeeManagementLogger(Class<?> classname) {
+    	log = Logger.getLogger(classname.getName());
+	}
  
     /**
      * To log the debug in file

@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<title>Index</title>
 </head>
 <body>
 	<form>
@@ -14,12 +15,6 @@
 			<button formaction="getProject">Create</button>
 		</p>
 	</form>
-	<form>
-		<p>
-			<button formaction="getIdfordeleteProject">Delete</button>
-		</p>
-	</form>
-
 	<form action="DisplayAllProject">
 		<p>
 			<input type="submit" name="operation" value="DisplayAllProject">
@@ -31,25 +26,5 @@
 				single project</button>
 		</p>
 	</form>
-	<form>
-	<p>
-		<button formaction="getIdForProjectUpdate">Update</button>
-	</p>
-	</form>
-	<form>
-	<p>
-		<button formaction="assignEmployee">Assign</button>
-	</p>
-	</form>
-	<form>
-	<p>
-		<button formaction="unassignEmployee">Unassign</button>
-	</p>
-	</form>
-	<p>
-	<form action="Retrieve">
-		<input type="submit" name="operation" value="Retrieve">
-	</form>
-	</p>
 </body>
 </html>
