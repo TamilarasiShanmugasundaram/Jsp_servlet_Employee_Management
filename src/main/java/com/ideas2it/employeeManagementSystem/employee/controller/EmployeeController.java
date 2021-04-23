@@ -140,7 +140,7 @@ public class EmployeeController {
 	 *           and view
 	 */
 	@RequestMapping(value = Constants.UPDATE_URL, method = RequestMethod.POST)
-	public ModelAndView update(@RequestParam(Constants.ID) int id) {
+	public ModelAndView updateEmployee(@RequestParam(Constants.ID) int id) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(id)) {
 				modelAndview.setViewName(Constants.CREATE_EMPLOYEE);
@@ -161,7 +161,7 @@ public class EmployeeController {
 	 *                 both model and view
 	 */
 	@RequestMapping(value = Constants.UPDATE_POST_URL, method = RequestMethod.POST)
-	public ModelAndView updateAll(@ModelAttribute(Constants.EMPLOYEE) Employee employee) {
+	public ModelAndView update(@ModelAttribute(Constants.EMPLOYEE) Employee employee) {
 		try {
 			if (employeeServiceImpl.isEmployeeExist(employee.getId())) {
 				boolean statusOfUpdateEmployee = employeeServiceImpl.updateAll(employee);
@@ -264,23 +264,6 @@ public class EmployeeController {
 			} else {
 				displayMessages(Constants.EMPLOYEE_NOT_DELETED);
 			}
-		} catch (EmployeeManagementException exception) {
-			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		}
-		return modelAndview;
-	}
-
-	/**
-	 * To get deleted employee details
-	 * 
-	 * return ModelAndView provides both model and view
-	 */
-	@RequestMapping(value = Constants.RETRIEVE_EMPLOYEES_GET_URL, method = RequestMethod.GET)
-	public ModelAndView getDeletedEmployees() {
-		try {
-			List<Employee> employeeList = employeeServiceImpl.getDeletedEmployees();
-			modelAndview.setViewName(Constants.DISPLAY_DELETED_EMPLOYEES);
-			modelAndview.addObject(Constants.DELETED_EMPLOYEES, employeeList);
 		} catch (EmployeeManagementException exception) {
 			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
 		}

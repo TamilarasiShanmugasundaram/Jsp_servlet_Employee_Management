@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-//import org.osgi.application.ApplicationContext;
-//import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -92,7 +90,7 @@ public class ProjectController {
 	public String createProject(@ModelAttribute(Constants.PROJECT) Project project) {
 		try {
 			if (false == projectServiceImpl.createProject(project)) {
-				displayMessages(Constants.DELETE_SUCCESS);
+				displayMessages(Constants.ADD_FAILURE);
 			}
 		} catch (EmployeeManagementException exception) {
 			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
@@ -165,7 +163,7 @@ public class ProjectController {
 	 *                model and view
 	 */
 	@RequestMapping(value = Constants.UPDATE_PROJECT_POST_URL, method = RequestMethod.POST)
-	public ModelAndView updateAll(@ModelAttribute(Constants.PROJECT) Project project) {
+	public ModelAndView updateProject(@ModelAttribute(Constants.PROJECT) Project project) {
 		try {
 			if (projectServiceImpl.isProjectExist(project.getProjectId())) {
 				if (projectServiceImpl.updateAll(project)) {
@@ -259,24 +257,7 @@ public class ProjectController {
 	}
 
 	/**
-	 * To get project details
-	 * 
-	 * return ModelAndView provides both model and view
-	 */
-	@RequestMapping(value = Constants.RETRIEVE_PROJECT_GET_URL, method = RequestMethod.GET)
-	public ModelAndView getDeletedProjects() {
-		try {
-			List<Project> projectList = projectServiceImpl.getDeletedProjects();
-			modelAndview.setViewName(Constants.DISPLAY_DELETED_PROJECTS);
-			modelAndview.addObject(Constants.DELETED_PROJECTS, projectList);
-		} catch (EmployeeManagementException exception) {
-			displayMessages(Constants.EMPLOYEE_MANAGEMENT_EXCEPTION);
-		}
-		return modelAndview;
-	}
-
-	/**
-	 * To get deleted project
+	 * To get projects
 	 * 
 	 * return ModelAndView provides both model and view
 	 */
